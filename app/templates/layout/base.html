@@ -1,0 +1,69 @@
+{% extends 'bootstrap/base.html' %}
+
+{% block title %}MIC{% endblock %}
+
+{% block head %}
+	{{ super() }}
+	<link rel="shortcut icon" href="{{ url_for('static', filename = 'favicon.ico') }}"
+type="image/x-icon">
+	<link rel="icon" href="{{ url_for('static', filename = 'favicon.ico') }}"
+type="image/x-icon">
+{% endblock %}
+
+
+{% block styles %}
+	{{ super() }}
+	<link href="{{ url_for('static', filename='css/base.css', _external=True) }}" rel="stylesheet">
+{% endblock %}
+
+{% block scripts %}
+	{{ super() }}
+	<!--引入moment.js库-->
+	{{ moment.include_moment() }}
+	{{ moment.lang('zh-cn') }}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">SAAS</a>
+			</div>
+
+			<ul class="nav navbar-nav">
+				<li class="active"><a href="#">Home <span class="sr-only">(current)</span></a></li>
+				{% if current_user.is_authenticated %}
+				<li><a href="#">profile</a></li>
+				{% endif %}
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				{% if current_user.is_authenticated %}
+				<li>
+					<a href="{{ url_for('auth.logout') }}">Sign Out</a>
+				</li>
+				{% else %}
+				<li>
+					<a href="{{ url_for('auth.login') }}">Sign In</a>
+				</li>
+				{% endif %}
+			</ul>
+		</div>
+	</nav>
+
+	{% for message in get_flashed_messages() %}
+	<div class="alert alert-warning">
+		<button type="button" class="close" data-dismiss="alert">&times;</button>
+		{{ message }}
+	</div>
+	{% endfor %}
+
+	{% block page_content %}{% endblock %}
+</div>
+{% endblock %}
