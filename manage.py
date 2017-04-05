@@ -27,7 +27,8 @@ def test():
 
 manager.add_command('shell', Shell(make_context=make_shell_context))
 manager.add_command('db', MigrateCommand)
-manager.add_command('apidoc', GenerateApiDoc(input_path='app/api_1_0', output_path='public/docs'))
+manager.add_command('apidoc', GenerateApiDoc(input_path='app/api_1_0',
+											 output_path='public/docs'))
 
 if __name__ == '__main__':
 	manager.run()
