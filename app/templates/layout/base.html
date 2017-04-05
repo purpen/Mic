@@ -20,7 +20,9 @@ type="image/x-icon">
 	{{ super() }}
 	<!--引入moment.js库-->
 	{{ moment.include_moment() }}
-	{{ moment.lang('zh-cn') }}
+	{% if g.locale != 'en'%}
+	<script src="/static/js/moment-{{g.locale}}.min.js"></script>
+	{% endif %}
 {% endblock %}
 
 {% block content %}

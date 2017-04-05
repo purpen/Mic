@@ -4,6 +4,7 @@ from app.models import Post
 from app import db
 from . import api
 from .authentication import auth
+from .restfultools import *
 from .errors import forbidden
 
 @api.route('/posts/')
@@ -18,7 +19,7 @@ def get_posts():
 	next = None
 	if pagination.has_next:
 		next = url_for('api.get_posts', page=page+1, _external=True)
-	return jsonify({
+	return full_response(R200_OK, {
 		'posts': [post.to_json() for post in posts],
 		'prev': prev,
 		'next': next,
@@ -28,7 +29,7 @@ def get_posts():
 @api.route('/posts/<int:id>')
 def get_post(id):
 	post = Post.query.get_or_404(id)
-	return jsonify(post.to_json)
+	return full_response(R200_OK, post.to_json)
 
 @api.route('/posts', methods=['POST'])
 def new_post():
@@ -37,8 +38,7 @@ def new_post():
 	db.session.add(post)
 	db.session.commit()
 
-	return jsonify(post.to_json()), 201, \
-		   {'Location': url_for('api.get_post', id=post.id, _external=True)}
+	return full_response(R201_CREATED, post.to_json())
 
 @api.route('/posts/<int:id>', methods=['PUT'])
 def edit_post(id):
@@ -47,4 +47,4 @@ def edit_post(id):
 		return forbidden('Insufficient permissions')
 	post.body = request.json.get('body', post.body)
 	db.session.add(post)
-	return jsonify(post.to_json())
+	return full_response(R200_OK, post.to_json())

@@ -19,6 +19,8 @@ from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 # 管理用户认证系统中的认证状态
 from flask_login import LoginManager
+# 国际化和本地化
+from flask_babelex import Babel
 
 # 导入配置参数
 from config import config
@@ -28,6 +30,7 @@ bootstrap = Bootstrap()
 moment = Moment()
 db = SQLAlchemy()
 mail = Mail()
+babel = Babel()
 
 # Flask-Login初始化
 login_manager = LoginManager()
@@ -42,6 +45,7 @@ def create_app(config_name):
     config[config_name].init_app(app)
 
     bootstrap.init_app(app)
+    babel.init_app(app)
     moment.init_app(app)
     db.init_app(app)
     mail.init_app(app)

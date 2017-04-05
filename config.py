@@ -12,11 +12,22 @@ import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+# available languages
+LANGUAGES = {
+	'zh_Hans_CN': 'Chinese',
+	'en': 'English',
+	'es': 'Español',
+}
+
 class Config:
 
 	# change this in your production settings !!!
 
 	SECRET_KEY = os.environ.get('SECRET_KEY') or 'Aine#2018%0110!'
+
+	# 默认语言
+	BABEL_DEFAULT_LOCALE = 'zh_Hans_CN'
+	BABEL_DEFAULT_TIMEZONE = 'UTC'
 
 	# 配置输出SQL语句
 	SQLALCHEMY_ECHO = True
