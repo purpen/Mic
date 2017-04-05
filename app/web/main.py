@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from flask import g, request
+from flask import g, current_app, request
+from flask_sqlalchemy import get_debug_queries
 from app import babel
 from config import LANGUAGES
 from . import web
@@ -21,6 +22,20 @@ def get_timezone():
     if user is not None:
         return user.timezone
 
-@web.before_request
+@web.before_app_request
 def before_request():
+    """
+    Such a function is executed before each request, even if outside of a blueprint.
+    """
     g.locale = get_locale()
+
+@web.after_app_request
+def after_request(response):
+    """
+    Such a function is executed after each request, even if outside of the blueprint.
+    """
+    for query in get_debug_queries():
+        if query.duration >= current_app.config['DATABASE_QUERY_TIMEOUT']:
+            current_app.logger.info("SLOW QUERY: %s\nParameters: %s\nDuration: %fs\nContext: %s\n" %
+                                       (query.statement, query.parameters, query.duration, query.context))
+    return response

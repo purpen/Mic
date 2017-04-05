@@ -51,6 +51,17 @@ def create_app(config_name):
     mail.init_app(app)
     login_manager.init_app(app)
 
+    # logging setting
+    if not app.debug:
+        import logging
+        from logging.handlers import RotatingFileHandler
+        file_handler = RotatingFileHandler('tmp/urk.log')
+        file_handler.setLevel(logging.INFO)
+        file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
+        app.logger.addHandler(file_handler)
+        app.logger.setLevel(logging.INFO)
+        app.logger.info('Urk startup')
+
     # attach routes
     from .web import web
     app.register_blueprint(web)
