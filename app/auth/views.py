@@ -44,7 +44,7 @@ def register():
 		return redirect(url_for('web.index'))
 	return render_template('auth/register.html', form=form)
 
-@auth.route('/confirm/<token>')
+@auth.route('/confirm/<token>', methods=['GET'])
 @login_required
 def confirm(token):
 	"""确认用户账户"""
@@ -67,19 +67,8 @@ def resend_confirmation():
 	return redirect(url_for('web.index'))
 
 
-# 针对程序全局请求的钩子，必须使用before_app_request修饰器
-@auth.before_app_request
-def before_request():
-	if current_user.is_authenticated:
-		# 每次收到用户的请求时都要调用ping()方法
-		current_user.ping()
-		if not current_user.confirmed \
-			and request.endpoint[:5] != 'auth.':
-			return redirect(url_for('auth.unconfirmed'))
-
-
 @auth.route('/unconfirmed')
 def unconfirmed():
 	if current_user.is_anonymous or current_user.confirmed:
 		return redirect(url_for('web.index'))
-	return render_template('auth/unconfirmed.html')
+	return render_template('auth/unconfirmed.html', token=current_user.generate_confirmation_token())

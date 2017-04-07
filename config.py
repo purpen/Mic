@@ -28,6 +28,7 @@ class Config:
     BABEL_DEFAULT_LOCALE = 'zh'
     BABEL_DEFAULT_TIMEZONE = 'UTC'
 
+    DB_PREFIX = 'fp_'
     # 配置输出SQL语句
     SQLALCHEMY_ECHO = True
 
@@ -53,12 +54,14 @@ class Config:
     MAIL_SENDER = os.environ.get('MAIL_SENDER') or DEFAULT_MAIL_SENDER
 
     # 日志
-    DEBUG_LOG = 'logs/urk-debug.log'
     ERROR_LOG = 'logs/urk-error.log'
 
     # pagination
     MAX_SEARCH_RESULTS = 50
     POSTS_PER_PAGE = 50
+
+    # css/js
+    BOOTSTRAP_SERVE_LOCAL = False
 
     @staticmethod
     def init_app(app):

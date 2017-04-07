@@ -19,10 +19,7 @@ type="image/x-icon">
 {% block scripts %}
 	{{ super() }}
 	<!--引入moment.js库-->
-	{{ moment.include_moment() }}
-	{% if g.locale != 'en'%}
-	<script src="/static/js/moment-{{g.locale}}.min.js"></script>
-	{% endif %}
+	{{ moment.include_moment(local_js=url_for('static', filename='js/moment-with-locales.min.js', _external=True)) }}
 {% endblock %}
 
 {% block content %}

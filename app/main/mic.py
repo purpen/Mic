@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-from flask import g, current_app, request
+from flask import g, current_app, request, redirect, url_for
 from flask_sqlalchemy import get_debug_queries
+from flask_login import current_user
 from app import babel
 from config import LANGUAGES
-from . import web
+from app.main import main
 
 @babel.localeselector
 def get_locale():
@@ -22,14 +23,24 @@ def get_timezone():
     if user is not None:
         return user.timezone
 
-@web.before_app_request
+# 针对程序全局请求的钩子，
+# 必须使用before_app_request修饰器
+@main.before_app_request
 def before_request():
     """
     Such a function is executed before each request, even if outside of a blueprint.
     """
     g.locale = get_locale()
 
-@web.after_app_request
+    # 验证用户
+    if current_user.is_authenticated:
+        # 每次收到用户的请求时都要调用ping()方法
+        current_user.ping()
+        if not current_user.confirmed and request.endpoint[:5] != 'auth.':
+            return redirect(url_for('auth.unconfirmed'))
+
+
+@main.after_app_request
 def after_request(response):
     """
     Such a function is executed after each request, even if outside of the blueprint.

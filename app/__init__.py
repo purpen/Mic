@@ -10,7 +10,7 @@ from flask import Flask
 # 脚本化管理
 from flask_script import Manager, Shell
 # 装载静态文件
-from flask_bootstrap import Bootstrap
+from flask_bootstrap import Bootstrap, WebCDN
 # 本地化日期和时间
 from flask_moment import Moment
 # 邮件
@@ -18,7 +18,7 @@ from flask_mail import Mail
 # 数据库连接
 from flask_sqlalchemy import SQLAlchemy
 # 管理用户认证系统中的认证状态
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user
 # 国际化和本地化
 from flask_babelex import Babel
 
@@ -55,7 +55,7 @@ def create_app(config_name):
     if not app.debug:
         import logging
         from logging.handlers import RotatingFileHandler
-        file_handler = RotatingFileHandler('tmp/urk.log')
+        file_handler = RotatingFileHandler(app.config['ERROR_LOG'])
         file_handler.setLevel(logging.INFO)
         file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
         app.logger.addHandler(file_handler)
@@ -63,6 +63,10 @@ def create_app(config_name):
         app.logger.info('Urk startup')
 
     # attach routes
+
+    from .main import main
+    app.register_blueprint(main)
+
     from .web import web
     app.register_blueprint(web)
 
@@ -80,5 +84,14 @@ def create_app(config_name):
     app.register_blueprint(api_1_0, url_prefix='/api/v1.0')
 
     # 附加路由和自定义的错误页面
+
+    app.extensions['bootstrap']['cdns']['jquery'] = WebCDN(
+        '//cdn.bootcss.com/jquery/3.2.1/'
+    )
+
+    app.extensions['bootstrap']['cdns']['bootstrap'] = WebCDN(
+        '//cdn.bootcss.com/bootstrap/3.3.7/'
+    )
+
 
     return app
