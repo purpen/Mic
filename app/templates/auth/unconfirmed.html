@@ -1,11 +1,19 @@
 {% extends 'layout/base.html' %}
 
+{% block private_styles %}
+<link href="{{ url_for('static', filename='css/app.css') }}" rel="stylesheet" type="text/css">
+{% endblock private_styles %}
+
 {% block page_content %}
-<div class="page-header">
-	<h1>Hello, {{ current_user.username }}</h1>
-</div>
-<div class="col-md-8">
-	<h3>You have not confirmed your account yet.</h3>
-	<p>Need another confirmation email? <a href="{{ url_for('auth.confirm', token=token) }}">Click here</a></p>
+<div class="one-page">
+	<div class="card">
+		<div class="page-header">
+			<h1>Hello, {{ current_user.username }}</h1>
+		</div>
+		<div class="col-md-12">
+			<h3>You have not confirmed your account yet.</h3>
+			<p>Need another confirmation email? <a href="{{ url_for('auth.confirm', token=token) }}">Click here</a></p>
+		</div>
+	</div>
 </div>
 {% endblock %}

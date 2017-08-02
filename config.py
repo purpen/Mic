@@ -24,8 +24,8 @@ class Config:
     CSRF_ENABLED = True
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'Aine#2018%0110!'
 
-    # 默认语言
-    BABEL_DEFAULT_LOCALE = 'zh'
+    # 默认语言, zh_CN,
+    BABEL_DEFAULT_LOCALE = 'en'
     BABEL_DEFAULT_TIMEZONE = 'UTC'
 
     DB_PREFIX = 'fp_'
@@ -62,6 +62,16 @@ class Config:
 
     # css/js
     BOOTSTRAP_SERVE_LOCAL = False
+
+    UPLOADED_PHOTOS_DEST = '/Users/xiaoyi/Project/Mic/public/uploads'
+    ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+    MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB
+
+    # csrf protected
+    WTF_CSRF_ENABLED = True
+
+    PJAX_BASE_TEMPLATE = 'pjax.html'
+
 
     @staticmethod
     def init_app(app):

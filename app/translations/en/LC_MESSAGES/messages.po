@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-04-05 16:15+0800\n"
+"POT-Creation-Date: 2017-07-27 16:36+0800\n"
 "PO-Revision-Date: 2017-04-05 16:10+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,15 +18,809 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.4.0\n"
 
-#: app/templates/test.html:15 app/templates/web/index.html:17
+#: app/constant.py:7
+msgid "China"
+msgstr ""
+
+#: app/constant.py:8
+msgid "USA"
+msgstr ""
+
+#: app/translate.py:9
+msgid "Error: translation service not available."
+msgstr ""
+
+#: app/translate.py:25
+msgid "Error: Unexpected error."
+msgstr ""
+
+#: app/admin/categories.py:171
+#, python-format
+msgid "Category[%s] have child node, can't deleted!!!"
+msgstr ""
+
+#: app/admin/forms/brand_forms.py:11
+msgid "Brand name cant empty!"
+msgstr ""
+
+#: app/admin/forms/brand_forms.py:22 app/admin/forms/brand_forms.py:36
+#: app/admin/forms/file_manager_forms.py:16
+#, python-format
+msgid "The name[%s] has been registered. Change it."
+msgstr ""
+
+#: app/admin/forms/category_forms.py:11 app/admin/forms/settings_forms.py:18
+#: app/templates/admin/categories/show_list.html:32
+#: app/templates/admin/products/create_and_edit.html:310
+msgid "Sort Order"
+msgstr ""
+
+#: app/admin/forms/category_forms.py:12
+#: app/templates/admin/file_manager.html:11
+msgid "Parent"
+msgstr ""
+
+#: app/admin/forms/category_forms.py:13
+msgid "Top"
+msgstr ""
+
+#: app/admin/forms/category_forms.py:14
+msgid "Icon image"
+msgstr ""
+
+#: app/admin/forms/category_forms.py:15
+msgid "Cover image"
+msgstr ""
+
+#: app/admin/forms/file_manager_forms.py:11
+msgid "Folder name cant empty!"
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:11
+msgid "Language Name"
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:11
+msgid "Language name cant empty!"
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:13
+msgid "Code"
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:13
+msgid "Language code cant empty!"
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:15
+msgid "Locale"
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:16
+#: app/templates/admin/categories/show_list.html:30
+msgid "Icon"
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:17
+msgid "Directory"
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:19 app/admin/forms/settings_forms.py:53
+#: app/admin/forms/settings_forms.py:84
+#: app/templates/admin/categories/show_list.html:33
+#: app/templates/admin/products/create_and_edit.html:303
+msgid "Status"
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:24 app/admin/forms/settings_forms.py:38
+#, python-format
+msgid "The name[%s] already exists."
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:42
+msgid "Country Name"
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:43
+msgid "Country name cant empty!"
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:44
+msgid "ISO Code (2)"
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:45
+msgid "ISO Code (2) cant empty!"
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:46
+msgid "ISO Code (3)"
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:47
+msgid "ISO Code (3) cant empty!"
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:48
+msgid "Address Format"
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:49
+msgid "Postcode required"
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:60 app/admin/forms/settings_forms.py:72
+#, python-format
+msgid "Country name [%s] already exists."
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:77
+msgid "Currency title cant empty!"
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:78
+msgid "Currency code cant empty!"
+msgstr ""
+
+#: app/models/order.py:8
+msgid "cancelled"
+msgstr ""
+
+#: app/models/order.py:9
+msgid "closed"
+msgstr ""
+
+#: app/models/order.py:10
+msgid "open"
+msgstr ""
+
+#: app/models/order.py:11
+msgid "pending"
+msgstr ""
+
+#: app/models/order.py:12
+msgid "paid"
+msgstr ""
+
+#: app/models/order.py:13
+msgid "sent"
+msgstr ""
+
+#: app/models/order.py:14
+msgid "received"
+msgstr ""
+
+#: app/models/product.py:11
+msgid "item"
+msgstr ""
+
+#: app/models/product.py:12
+msgid "free_product"
+msgstr ""
+
+#: app/models/product.py:13
+msgid "gift_card"
+msgstr ""
+
+#: app/models/product.py:14
+msgid "software"
+msgstr ""
+
+#: app/models/product.py:15
+msgid "key"
+msgstr ""
+
+#: app/templates/test.html:15
 msgid "Home"
 msgstr "Index"
 
-#: app/templates/test.html:16 app/templates/web/index.html:18
+#: app/templates/layout/admin.html:90 app/templates/layout/admin.html:123
+#: app/templates/test.html:16
 msgid "Products"
 msgstr "Goods"
 
-#: app/web/views.py:9
-msgid "Invalid login. Please login again."
-msgstr "Relogin."
+#: app/templates/admin/file_manager.html:6
+msgid "File Manager"
+msgstr ""
+
+#: app/templates/admin/file_manager.html:14
+msgid "Refresh"
+msgstr ""
+
+#: app/templates/admin/file_manager.html:17
+msgid "Upload"
+msgstr ""
+
+#: app/templates/admin/file_manager.html:20
+msgid "New Folder"
+msgstr ""
+
+#: app/templates/admin/brands/show_list.html:12
+#: app/templates/admin/categories/show_list.html:16
+#: app/templates/admin/country/show_countries.html:15
+#: app/templates/admin/currency/show_list.html:15
+#: app/templates/admin/file_manager.html:23
+#: app/templates/admin/languages/show_list.html:14
+#: app/templates/admin/lengths/show_list.html:14
+#: app/templates/admin/products/pro_list.html:14
+#: app/templates/admin/weights/show_list.html:14
+msgid "Delete"
+msgstr ""
+
+#: app/templates/admin/index.html:6 app/templates/layout/admin.html:67
+msgid "Dashboard"
+msgstr ""
+
+#: app/templates/admin/brands/show_list.html:6
+msgid "Brand List"
+msgstr ""
+
+#: app/templates/admin/brands/show_list.html:9
+#: app/templates/admin/categories/show_list.html:13
+#: app/templates/admin/country/show_countries.html:12
+#: app/templates/admin/currency/show_list.html:12
+#: app/templates/admin/languages/show_list.html:11
+#: app/templates/admin/lengths/show_list.html:11
+#: app/templates/admin/products/pro_list.html:11
+#: app/templates/admin/weights/show_list.html:11
+msgid "Add New"
+msgstr ""
+
+#: app/templates/admin/brands/show_list.html:49
+#: app/templates/admin/categories/show_list.html:57
+#: app/templates/admin/categories/show_list.html:58
+#: app/templates/admin/country/show_countries.html:58
+#: app/templates/admin/country/show_countries.html:59
+#: app/templates/admin/currency/show_list.html:52
+#: app/templates/admin/currency/show_list.html:53
+#: app/templates/admin/languages/show_list.html:49
+#: app/templates/admin/lengths/show_list.html:49
+#: app/templates/admin/lengths/show_list.html:50
+#: app/templates/admin/products/pro_list.html:52
+#: app/templates/admin/weights/show_list.html:49
+#: app/templates/admin/weights/show_list.html:50
+msgid "Edit"
+msgstr ""
+
+#: app/templates/admin/brands/submit.html:8
+msgid "Add Brand"
+msgstr ""
+
+#: app/templates/admin/brands/submit.html:10
+msgid "Edit Brand"
+msgstr ""
+
+#: app/templates/admin/brands/submit.html:15
+#: app/templates/admin/categories/create_and_edit.html:15
+#: app/templates/admin/country/create_and_edit.html:15
+#: app/templates/admin/currency/create_and_edit.html:15
+#: app/templates/admin/languages/create_and_edit.html:14
+#: app/templates/admin/lengths/create_and_edit.html:15
+#: app/templates/admin/products/create_and_edit.html:23
+#: app/templates/admin/uploads/new_upload.html:8
+#: app/templates/admin/weights/create_and_edit.html:15
+msgid "Save"
+msgstr ""
+
+#: app/templates/admin/brands/submit.html:18
+#: app/templates/admin/categories/create_and_edit.html:18
+#: app/templates/admin/country/create_and_edit.html:18
+#: app/templates/admin/currency/create_and_edit.html:18
+#: app/templates/admin/languages/create_and_edit.html:17
+#: app/templates/admin/lengths/create_and_edit.html:18
+#: app/templates/admin/products/create_and_edit.html:26
+#: app/templates/admin/uploads/new_upload.html:11
+#: app/templates/admin/weights/create_and_edit.html:18
+msgid "Cancel"
+msgstr ""
+
+#: app/templates/admin/categories/create_and_edit.html:8
+msgid "Add Category"
+msgstr ""
+
+#: app/templates/admin/categories/create_and_edit.html:10
+msgid "Edit Category"
+msgstr ""
+
+#: app/templates/admin/categories/create_and_edit.html:29
+#: app/templates/admin/products/create_and_edit.html:37
+msgid "General"
+msgstr ""
+
+#: app/templates/admin/categories/create_and_edit.html:30
+#: app/templates/admin/products/create_and_edit.html:38
+msgid "Data"
+msgstr ""
+
+#: app/templates/admin/categories/create_and_edit.html:48
+#: app/templates/admin/categories/show_list.html:31
+msgid "Category Name"
+msgstr ""
+
+#: app/templates/admin/categories/create_and_edit.html:54
+#: app/templates/admin/products/create_and_edit.html:62
+msgid "Description"
+msgstr ""
+
+#: app/templates/admin/categories/create_and_edit.html:69
+msgid "Select parent category"
+msgstr ""
+
+#: app/templates/admin/categories/create_and_edit.html:83
+msgid "Set As Top"
+msgstr ""
+
+#: app/templates/admin/categories/show_list.html:6
+msgid "Category List"
+msgstr ""
+
+#: app/templates/admin/categories/show_list.html:10
+msgid "Rebuild"
+msgstr ""
+
+#: app/templates/admin/categories/show_list.html:34
+#: app/templates/admin/lengths/show_list.html:33
+msgid "Action"
+msgstr ""
+
+#: app/templates/admin/categories/show_list.html:51
+#: app/templates/admin/country/show_countries.html:52
+msgid "Enabled"
+msgstr ""
+
+#: app/templates/admin/categories/show_list.html:53
+#: app/templates/admin/country/show_countries.html:54
+msgid "Disabled"
+msgstr ""
+
+#: app/templates/admin/country/create_and_edit.html:8
+msgid "Add Country"
+msgstr ""
+
+#: app/templates/admin/country/create_and_edit.html:10
+msgid "Edit Country"
+msgstr ""
+
+#: app/templates/admin/country/show_countries.html:7
+msgid "Country List"
+msgstr ""
+
+#: app/templates/admin/currency/create_and_edit.html:8
+msgid "Add Currency"
+msgstr ""
+
+#: app/templates/admin/currency/create_and_edit.html:10
+msgid "Edit Currency"
+msgstr ""
+
+#: app/templates/admin/currency/show_list.html:8
+msgid "Currency List"
+msgstr ""
+
+#: app/templates/admin/languages/create_and_edit.html:8
+msgid "Add Language"
+msgstr ""
+
+#: app/templates/admin/languages/create_and_edit.html:10
+msgid "Edit Language"
+msgstr ""
+
+#: app/templates/admin/languages/create_and_edit.html:88
+msgid "Select Status"
+msgstr ""
+
+#: app/templates/admin/languages/show_list.html:7
+msgid "Language List"
+msgstr ""
+
+#: app/templates/admin/lengths/create_and_edit.html:8
+msgid "Add Length Class"
+msgstr ""
+
+#: app/templates/admin/lengths/create_and_edit.html:10
+msgid "Edit Length Class"
+msgstr ""
+
+#: app/templates/admin/lengths/create_and_edit.html:31
+#: app/templates/admin/lengths/show_list.html:30
+msgid "Length Title"
+msgstr ""
+
+#: app/templates/admin/lengths/create_and_edit.html:47
+#: app/templates/admin/lengths/show_list.html:31
+msgid "Length Unit"
+msgstr ""
+
+#: app/templates/admin/lengths/create_and_edit.html:63
+#: app/templates/admin/lengths/show_list.html:32
+#: app/templates/admin/weights/create_and_edit.html:62
+msgid "Value"
+msgstr ""
+
+#: app/templates/admin/lengths/show_list.html:7
+msgid "Length Class List"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:17
+msgid "Add Product"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:19
+msgid "Edit Product"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:56
+msgid "Product Name"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:68
+msgid "Meta Title"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:74
+msgid "Meta Description"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:80
+msgid "Meta keyword"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:87
+msgid "Tags"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:103
+msgid "Image"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:119
+msgid "Model"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:127
+msgid "SKU"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:138
+msgid "UPC"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:149
+msgid "EAN"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:160
+msgid "JAN"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:171
+msgid "ISBN"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:182
+msgid "MPN"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:192
+#: app/web/forms/auth_forms.py:27
+msgid "Location"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:198
+#: app/templates/web/header.html:15
+msgid "Price"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:204
+msgid "Tax Class"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:210
+msgid "Quantity"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:218
+msgid "Minimum Quantity"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:228
+msgid "Subtract Stock"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:235
+msgid "Out Of Stock Status"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:245
+msgid "Requires Shipping"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:258
+msgid "Date Available"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:269
+msgid "Dimensions (L x W x H)"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:285
+msgid "Length Class"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:291
+msgid "Weight"
+msgstr ""
+
+#: app/templates/admin/products/create_and_edit.html:297
+msgid "Weight Class"
+msgstr ""
+
+#: app/templates/admin/products/pro_list.html:7
+msgid "Product List"
+msgstr ""
+
+#: app/templates/admin/uploads/new_upload.html:15
+#: app/templates/admin/uploads/show_list.html:93
+#: app/templates/layout/admin.html:180
+msgid "Uploads"
+msgstr ""
+
+#: app/templates/admin/uploads/new_upload.html:25
+msgid "Add upload info"
+msgstr ""
+
+#: app/templates/admin/uploads/new_upload.html:27
+msgid "Edit upload info"
+msgstr ""
+
+#: app/templates/admin/uploads/show_list.html:86
+msgid "Added"
+msgstr ""
+
+#: app/templates/admin/uploads/show_list.html:89
+msgid "Remove"
+msgstr ""
+
+#: app/templates/admin/uploads/show_list.html:101
+msgid "Upload List"
+msgstr ""
+
+#: app/templates/admin/weights/create_and_edit.html:8
+msgid "Add Weight Class"
+msgstr ""
+
+#: app/templates/admin/weights/create_and_edit.html:10
+msgid "Edit Weight Class"
+msgstr ""
+
+#: app/templates/admin/weights/create_and_edit.html:30
+msgid "Weight Title"
+msgstr ""
+
+#: app/templates/admin/weights/create_and_edit.html:46
+msgid "Weight Unit"
+msgstr ""
+
+#: app/templates/admin/weights/show_list.html:7
+msgid "Weight Class List"
+msgstr ""
+
+#: app/templates/block/_select_items.html:2 app/templates/layout/admin.html:261
+#: app/templates/layout/base.html:50
+msgid "items selected"
+msgstr ""
+
+#: app/templates/layout/admin.html:72
+msgid "Overview"
+msgstr ""
+
+#: app/templates/layout/admin.html:79
+msgid "Catalog"
+msgstr ""
+
+#: app/templates/layout/admin.html:84
+msgid "Categories"
+msgstr ""
+
+#: app/templates/layout/admin.html:87
+msgid "Brands"
+msgstr ""
+
+#: app/templates/layout/admin.html:97 app/templates/layout/admin.html:120
+msgid "Sales"
+msgstr ""
+
+#: app/templates/layout/admin.html:102
+msgid "Orders"
+msgstr ""
+
+#: app/templates/layout/admin.html:105
+msgid "Returns"
+msgstr ""
+
+#: app/templates/layout/admin.html:108 app/templates/layout/admin.html:126
+msgid "Customers"
+msgstr ""
+
+#: app/templates/layout/admin.html:115
+msgid "Reports"
+msgstr ""
+
+#: app/templates/layout/admin.html:129 app/templates/layout/admin.html:148
+#: app/templates/layout/admin.html:153
+msgid "Marketing"
+msgstr ""
+
+#: app/templates/layout/admin.html:136
+msgid "Pages"
+msgstr ""
+
+#: app/templates/layout/admin.html:141
+msgid "Single Page"
+msgstr ""
+
+#: app/templates/layout/admin.html:156
+msgid "Affilicates"
+msgstr ""
+
+#: app/templates/layout/admin.html:159
+msgid "Coupons"
+msgstr ""
+
+#: app/templates/layout/admin.html:162
+msgid "Mail"
+msgstr ""
+
+#: app/templates/layout/admin.html:169
+msgid "System"
+msgstr ""
+
+#: app/templates/layout/admin.html:174
+msgid "Settings"
+msgstr ""
+
+#: app/templates/layout/admin.html:177
+msgid "Users"
+msgstr ""
+
+#: app/templates/layout/admin.html:183
+msgid "Languages"
+msgstr ""
+
+#: app/templates/layout/admin.html:186
+msgid "Currencies"
+msgstr ""
+
+#: app/templates/layout/admin.html:189
+msgid "Countries"
+msgstr ""
+
+#: app/templates/layout/admin.html:192
+msgid "Zones"
+msgstr ""
+
+#: app/templates/layout/admin.html:195
+msgid "Geo Zones"
+msgstr ""
+
+#: app/templates/layout/admin.html:198
+msgid "Taxes"
+msgstr ""
+
+#: app/templates/layout/admin.html:201
+msgid "Length Classes"
+msgstr ""
+
+#: app/templates/layout/admin.html:204
+msgid "Weight Classes"
+msgstr ""
+
+#: app/templates/layout/admin.html:211
+msgid "Tools"
+msgstr ""
+
+#: app/templates/layout/admin.html:216
+msgid "Backup / Restore"
+msgstr ""
+
+#: app/templates/layout/admin.html:219
+msgid "Error Logs"
+msgstr ""
+
+#: app/templates/web/header.html:14
+msgid "Index"
+msgstr ""
+
+#: app/templates/web/index.html:14
+msgid "一键开通"
+msgstr ""
+
+#: app/templates/web/setup.html:10
+msgid "Start registration and opening of stores"
+msgstr ""
+
+#: app/templates/web/setup.html:39
+msgid "Getting started"
+msgstr ""
+
+#: app/templates/web/setup.html:49
+msgid "Select Languages"
+msgstr ""
+
+#: app/templates/web/setup.html:63
+msgid "Help?"
+msgstr ""
+
+#: app/templates/web/setup.html:64
+msgid "Terms"
+msgstr ""
+
+#: app/web/forms/auth_forms.py:10
+msgid "Email"
+msgstr ""
+
+#: app/web/forms/auth_forms.py:10
+msgid "Email can't empty!"
+msgstr ""
+
+#: app/web/forms/auth_forms.py:11
+msgid "Format isn't email!"
+msgstr ""
+
+#: app/web/forms/auth_forms.py:12
+msgid "Password"
+msgstr ""
+
+#: app/web/forms/auth_forms.py:12
+msgid "Password can't empty!"
+msgstr ""
+
+#: app/web/forms/auth_forms.py:13
+msgid "The password is at least 6 characters"
+msgstr ""
+
+#: app/web/forms/auth_forms.py:14
+msgid "Store Name"
+msgstr ""
+
+#: app/web/forms/auth_forms.py:14
+msgid "Store name can't empty!"
+msgstr ""
+
+#: app/web/forms/auth_forms.py:18
+msgid "Email already registered."
+msgstr ""
+
+#: app/web/forms/auth_forms.py:22
+msgid "Store name already exist!"
+msgstr ""
+
+#: app/web/forms/auth_forms.py:26
+msgid "User name"
+msgstr ""
+
+#: app/web/forms/auth_forms.py:28
+msgid "About me"
+msgstr ""
+
+#~ msgid "Invalid login. Please login again."
+#~ msgstr "Relogin."
+
+#~ msgid "Brands List"
+#~ msgstr ""
+
+#~ msgid "Add brand info"
+#~ msgstr ""
+
+#~ msgid "Edit brand info"
+#~ msgstr ""
+
+#~ msgid "Currency"
+#~ msgstr ""
+
+#~ msgid "Filter"
+#~ msgstr ""
+
+#~ msgid "Store Location"
+#~ msgstr ""
 

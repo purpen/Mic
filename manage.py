@@ -24,6 +24,18 @@ def test():
     unittest.TextTestRunner(verbosity=2).run(tests)
 
 
+@manager.command
+def run_sql():
+    sql = "SELECT cp.category_id,c.parent_id FROM fp_category_path AS cp"
+    sql += " LEFT JOIN fp_category AS c ON (cp.category_id=c.id)"
+    sql += " GROUP BY cp.category_id"
+    result = db.engine.execute(sql)
+
+    for row in result:
+        print(row)
+
+
+
 manager.add_command('shell', Shell(make_context=make_shell_context))
 manager.add_command('db', MigrateCommand)
 manager.add_command('apidoc', GenerateApiDoc(input_path='app/api_1_0',

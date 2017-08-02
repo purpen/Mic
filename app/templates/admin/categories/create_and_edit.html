@@ -1,0 +1,135 @@
+{% extends "layout/admin.html" %}
+
+{% block page_content %}
+<div class="form-page">
+	<div class="page-header">
+		<span>
+			{% if mode == 'create' %}
+				{{ _('Add Category') }}
+			{% else %}
+				{{ _('Edit Category') }}
+			{% endif %}
+		</span>
+
+		<div class="pull-right m-t-10">
+			<button type="submit" form="form-category" class="btn btn-icon btn-primary waves-effect waves-light" data-toggle="tooltip" data-original-title="{{ _('Save') }}">
+				<i class="fa fa-save"></i>
+			</button>
+			<a href="{{ url_for('admin.show_categories') }}" class="btn btn-icon btn-default waves-effect waves-light" data-toggle="tooltip" data-original-title="{{ _('Cancel') }}">
+				<i class="fa fa-reply"></i>
+			</a>
+		</div>
+	</div>
+
+	<div class="card-box">
+		<form class="form-horizontal" role="form" method="post" id="form-category" action="">
+			{{ form.hidden_tag() }}
+
+			<ul class="nav nav-tabs nav-tabs-google">
+				<li class="active"><a href="#tab-general" data-toggle="tab">{{ _('General') }}</a></li>
+				<li><a href="#tab-data" data-toggle="tab">{{ _('Data') }}</a></li>
+			</ul>
+
+			<div class="tab-content m-t-30">
+				<div id="tab-general" class="tab-pane active">
+					<ul class="nav nav-tabs" id="language">
+						{% for lang in languages %}
+						<li {% if loop.first %}class="active"{% endif %}>
+							<a href="#language{{ lang.id }}" data-toggle="tab" aria-expanded="true">
+								<img src="{{ lang.icon.view_url }}" title="{{ lang.name }}"> {{ lang.name }}
+							</a>
+						</li>
+						{% endfor %}
+					</ul>
+					<div class="tab-content m-t-20">
+						{% for lang in languages %}
+						<div id="language{{ lang.id }}" class="tab-pane {% if loop.first %} active{% endif %}">
+							<div class="form-group required">
+								<label class="col-md-2 control-label">{{ _('Category Name') }}</label>
+								<div class="col-md-8">
+									<input class="form-control" name="category_description[{{ lang.id }}][name]" value="{% if all_descriptions %}{{ all_descriptions[lang.id]['name'] }}{% endif %}" type="text">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">{{ _('Description') }}</label>
+								<div class="col-md-8">
+									<input class="form-control" name="category_description[{{ lang.id }}][description]" value="{% if all_descriptions %}{{ all_descriptions[lang.id]['description'] }}{% endif %}" type="text">
+								</div>
+							</div>
+						</div>
+						{% endfor %}
+					</div>
+				</div>
+
+				<div id="tab-data" class="tab-pane">
+					<div class="form-group">
+						{{ form.parent_id.label(class="col-md-2 control-label") }}
+						<div class="col-md-5">
+							<select name="parent_id" class="form-control select2">
+								<option value="0">{{ _('Select parent category') }}</option>
+								{% for cate in paginated_categories %}
+								<option value="{{ cate.id }}" {% if category.parent_id == cate.id %}selected="selected"{% endif %}>{{ cate.name|safe }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-md-2 control-label">{{ form.top.label }}</label>
+						<div class="col-md-5">
+							<div class="checkbox checkbox-primary">
+								<input id="top_id" name="top" type="checkbox" value="{{ category.top }}">
+								<label for="top_id">
+									{{ _('Set As Top') }}
+								</label>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-md-2 control-label">{{ form.icon.label }}</label>
+						<div class="col-md-10">
+							{% if mode == 'create' %}
+							<a href="javascript:void(0);" id="icon_thumb_image" data-target="icon" data-toggle="image" class="img-thumbnail" data-original-title="" aria-describedby="">
+								<img src="{{ url_for('static', filename='images/no_image-100x100.png') }}" width="100px" data-placeholder="{{ url_for('static', filename='images/no_image-100x100.png') }}">
+							</a>
+							{% else %}
+							<a href="javascript:void(0);" id="icon_thumb_image" data-target="icon" data-toggle="image" class="img-thumbnail" data-original-title="" aria-describedby="">
+								<img src="{{ category.icon.view_url|default(url_for('static', filename='images/no_image-100x100.png')) }}" width="100px" data-placeholder="{{ url_for('static', filename='images/no_image-100x100.png') }}">
+							</a>
+							{% endif %}
+							<input id="icon_id" name="icon" value="{{ category.icon_id|default(0) }}" type="hidden">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-md-2 control-label">{{ form.cover.label }}</label>
+						<div class="col-md-10">
+							{% if mode == 'create' %}
+							<a href="javascript:void(0);" id="cover_thumb_image" data-target="cover" data-toggle="image" class="img-thumbnail" data-original-title="" aria-describedby="">
+								<img src="{{ url_for('static', filename='images/no_image-100x100.png') }}" width="100px" data-placeholder="{{ url_for('static', filename='images/no_image-100x100.png') }}">
+							</a>
+							{% else %}
+							<a href="javascript:void(0);" id="cover_thumb_image" data-target="cover" data-toggle="image" class="img-thumbnail" data-original-title="" aria-describedby="">
+								<img src="{{ category.cover.view_url|default(url_for('static', filename='images/no_image-100x100.png')) }}" width="100px" data-placeholder="{{ url_for('static', filename='images/no_image-100x100.png') }}">
+							</a>
+							{% endif %}
+							<input id="cover_id" name="cover" value="{{ category.cover_id|default(0) }}" type="hidden">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-md-2 control-label">{{ form.sort_order.label }}</label>
+						<div class="col-md-5">
+							{{ form.sort_order(class='form-control', value=category.sort_order|default(1)) }}
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+		</form>
+
+	</div>
+</div>
+{% endblock %}

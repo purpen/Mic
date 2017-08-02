@@ -19,12 +19,6 @@ def login():
 		flash('Invalid username or password.')
 	return render_template('auth/login.html', form=form)
 
-@auth.route('/logout')
-@login_required
-def logout():
-	logout_user()
-	flash('You have been logged out.')
-	return redirect(url_for('web.index'))
 
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
@@ -32,7 +26,8 @@ def register():
 	if form.validate_on_submit():
 		user = User(email=form.email.data,
 					username=form.username.data,
-					password=form.password.data)
+					password=form.password.data,
+					time_zone='zh')
 		db.session.add(user)
 		db.session.commit()
 
@@ -43,6 +38,15 @@ def register():
 		flash('A confirmation email has been sent to you by email.')
 		return redirect(url_for('web.index'))
 	return render_template('auth/register.html', form=form)
+
+
+@auth.route('/logout')
+@login_required
+def logout():
+	logout_user()
+	flash('You have been logged out.')
+	return redirect(url_for('web.index'))
+
 
 @auth.route('/confirm/<token>', methods=['GET'])
 @login_required

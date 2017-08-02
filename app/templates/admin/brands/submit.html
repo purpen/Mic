@@ -1,10 +1,96 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends pjax("layout/admin.html") %}
+
+{% block page_content %}
+<div class="form-page">
+	<div class="page-header">
+		<span>
+			{% if mode == 'create' %}
+				{{ _('Add Brand') }}
+			{% else %}
+				{{ _('Edit Brand') }}
+			{% endif %}
+		</span>
+
+		<div class="pull-right m-t-10">
+			<button type="submit" form="form-brand" class="btn btn-icon btn-primary waves-effect waves-light" data-toggle="tooltip" data-original-title="{{ _('Save') }}">
+				<i class="fa fa-save"></i>
+			</button>
+			<a href="{{ url_for('admin.show_brands') }}" class="btn btn-icon btn-default waves-effect waves-light" data-toggle="tooltip" data-original-title="{{ _('Cancel') }}">
+				<i class="fa fa-reply"></i>
+			</a>
+		</div>
+	</div>
+
+	<div class="card-box">
+		<!--Main Content-->
+		<form class="form-horizontal" role="form" method="post" id="form-brand" action="">
+			{{ form.hidden_tag() }}
+
+			<div class="form-group required {% if form.errors.name %} has-error{% endif %}">
+				{{ form.name.label(class="col-md-2 control-label") }}
+				<div class="col-md-7">
+					{{ form.name(maxlength=64, class='form-control') }}
+					{% for error in form.errors.name %}
+					<span class="help-block">{{ error }}</span><br>
+					{% endfor %}
+				</div>
+			</div>
+
+			<div class="form-group">
+				{{ form.features.label(class="col-md-2 control-label") }}
+				<div class="col-md-7">
+					{{ form.features(class='form-control') }}
+				</div>
+			</div>
+
+			<div class="form-group">
+				{{ form.logo.label(class="col-md-2 control-label") }}
+				<div class="col-md-7">
+					{% if mode == 'create' %}
+					<a href="javascript:void(0);" id="logo_thumb_image" data-target="logo" data-toggle="image" class="img-thumbnail" data-original-title="" aria-describedby="">
+						<img src="{{ url_for('static', filename='images/no_image-100x100.png') }}" width="100px" data-placeholder="{{ url_for('static', filename='images/no_image-100x100.png') }}">
+					</a>
+					{% else %}
+					<a href="javascript:void(0);" id="logo_thumb_image" data-target="logo" data-toggle="image" class="img-thumbnail" data-original-title="" aria-describedby="">
+						<img src="{{ brand.logo.view_url|default(url_for('static', filename='images/no_image-100x100.png')) }}" width="100px" data-placeholder="{{ url_for('static', filename='images/no_image-100x100.png') }}">
+					</a>
+					{% endif %}
+					<input id="logo_id" name="logo" value="{{ brand.logo_id|default(0) }}" type="hidden">
+				</div>
+			</div>
+
+			<div class="form-group">
+				{{ form.banner.label(class="col-md-2 control-label") }}
+				<div class="col-md-7">
+					{% if mode == 'create' %}
+					<a href="javascript:void(0);" id="banner_thumb_image" data-target="banner" data-toggle="image" class="img-thumbnail" data-original-title="" aria-describedby="">
+						<img src="{{ url_for('static', filename='images/no_image-100x100.png') }}" width="100px" data-placeholder="{{ url_for('static', filename='images/no_image-100x100.png') }}">
+					</a>
+					{% else %}
+					<a href="javascript:void(0);" id="banner_thumb_image" data-target="banner" data-toggle="image" class="img-thumbnail" data-original-title="" aria-describedby="">
+						<img src="{{ brand.banner.view_url|default(url_for('static', filename='images/no_image-100x100.png')) }}" width="100px" data-placeholder="{{ url_for('static', filename='images/no_image-100x100.png') }}">
+					</a>
+					{% endif %}
+					<input id="banner_id" name="banner" value="{{ brand.banner_id|default(0) }}" type="hidden">
+				</div>
+			</div>
+
+			<div class="form-group">
+				{{ form.description.label(class="col-md-2 control-label") }}
+				<div class="col-md-7">
+					{{ form.description(class='form-control') }}
+				</div>
+			</div>
+
+			<div class="form-group">
+				{{ form.sort_num.label(class="col-md-2 control-label") }}
+				<div class="col-md-7">
+					{{ form.sort_num(class='form-control') }}
+				</div>
+			</div>
+
+		</form>
+	</div>
+
+</div>
+{% endblock %}

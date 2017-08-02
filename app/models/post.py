@@ -6,13 +6,15 @@ from app.models import User
 from app.exceptions import ValidationError
 
 class Post(db.Model):
-	__tablename__ = 'fp_posts'
+	__tablename__ = 'fp_post'
+
 	id = db.Column(db.Integer, primary_key=True)
+
 	title = db.Column(db.String(100))
 	body = db.Column(db.Text)
 	created_at = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 	# User一对多关系
-	# author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+	author_id = db.Column(db.Integer, db.ForeignKey('fp_user.id'))
 
 	@staticmethod
 	def generate_fake(count=100):

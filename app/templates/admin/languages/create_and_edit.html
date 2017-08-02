@@ -1,0 +1,97 @@
+{% extends "layout/admin.html" %}
+
+{% block page_content %}
+<div class="form-page">
+	<div class="page-header">
+		<span>
+			{% if mode == 'create' %}
+				{{ _('Add Language') }}
+			{% else %}
+				{{ _('Edit Language') }}
+			{% endif %}
+		</span>
+		<div class="pull-right m-t-10">
+			<button type="submit" form="form-language" class="btn btn-icon btn-primary waves-effect waves-light" data-toggle="tooltip" data-original-title="{{ _('Save') }}">
+				<i class="fa fa-save"></i>
+			</button>
+			<a href="{{ url_for('admin.show_languages') }}" class="btn btn-icon btn-default waves-effect waves-light" data-toggle="tooltip" data-original-title="{{ _('Cancel') }}">
+				<i class="fa fa-reply"></i>
+			</a>
+		</div>
+	</div>
+
+	<div class="card-box">
+		<form class="form-horizontal" role="form" method="post" id="form-language" action="">
+			{{ form.hidden_tag() }}
+
+			<div class="form-group required {% if form.errors.name %} has-error{% endif %}">
+				<label class="col-md-2 control-label">{{ form.name.label }}</label>
+				<div class="col-md-5">
+					{{ form.name(maxlength=64, class='form-control', value=language.name) }}
+					{% for error in form.errors.name %}
+					<span class="help-block">{{ error }}</span><br>
+					{% endfor %}
+				</div>
+			</div>
+
+			<div class="form-group required {% if form.errors.code %} has-error{% endif %}">
+				<label class="col-md-2 control-label">
+					{{ form.code.label }}
+				</label>
+				<div class="col-md-5">
+					{{ form.code(class='form-control', value=language.code) }}
+					{% for error in form.errors.code %}
+					<span class="help-block">{{ error }}</span><br>
+					{% endfor %}
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-md-2 control-label">
+					{{ form.locale.label }} <small data-toggle="tooltip" data-original-title="eg: en_US.UTF-8,en_US,en-gb,en_gb,english"><i class="fa fa-question-circle"></i></small>
+				</label>
+				<div class="col-md-5">
+					{{ form.locale(class='form-control', value=language.locale) }}
+				</div>
+			</div>
+
+
+			<div class="form-group">
+				<label class="col-md-2 control-label">{{ form.icon.label }}</label>
+				<div class="col-md-5">
+					{% if mode == 'create' %}
+					<a href="javascript:void(0);" id="icon_thumb_image" data-target="icon" data-toggle="image" class="img-thumbnail" data-original-title="" aria-describedby="">
+						<img src="{{ url_for('static', filename='images/no_image-100x100.png') }}" width="100px" data-placeholder="{{ url_for('static', filename='images/no_image-100x100.png') }}">
+					</a>
+					{% else %}
+					<a href="javascript:void(0);" id="icon_thumb_image" data-target="icon" data-toggle="image" class="img-thumbnail" data-original-title="" aria-describedby="">
+						<img src="{{ language.icon.view_url|default(url_for('static', filename='images/no_image-100x100.png')) }}" width="100px" data-placeholder="{{ url_for('static', filename='images/no_image-100x100.png') }}">
+					</a>
+					{% endif %}
+					<input id="icon_id" name="icon" value="{{ language.icon_id|default(0) }}" type="hidden">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-md-2 control-label">{{ form.sort_order.label }}</label>
+				<div class="col-md-5">
+					{{ form.sort_order(class='form-control', value=language.sort_order|default(1)) }}
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-md-2 control-label">
+					{{ form.status.label }} <small data-toggle="tooltip" data-original-title="在语言下拉项中隐藏/显示"><i class="fa fa-question-circle"></i></small>
+				</label>
+				<div class="col-md-5">
+					<select name="status" class="form-control select2">
+						<option value="0">{{ _('Select Status') }}</option>
+						<option value="1" {% if language.status == 1 %}selected="selected"{% endif %}>Enabled</option>
+						<option value="-1" {% if language.status == -1 %}selected="selected"{% endif %}>Disabled</option>
+					</select>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock %}

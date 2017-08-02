@@ -1,20 +1,17 @@
-{% extends 'layout/base.html' %}
+{% extends 'layout/web.html' %}
 
 {% block page_content %}
-<div class="page-header">
-	<h1>
-		Hello,
-		{% if current_user.is_authenticated %}
-			{{ current_user.username }}
-		{% else %}
-			World
-		{% endif %}!
-	</h1>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="container text-center">
 
-	<p>
-		语言：{{ language }}
-	</p>
-	<p>{{ _('Home') }}</p>
-	<p>{{ _('Products') }}</p>
+				<a href="{{ url_for('web.setup') }}" class="btn btn-lg btn-primary">
+					{{ _('一键开通') }}
+				</a>
+
+			</div>
+		</div>
+	</div>
 </div>
 {% endblock %}

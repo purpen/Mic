@@ -1,0 +1,72 @@
+{% extends pjax("layout/admin.html") %}
+
+{% block page_content %}
+<div class="list-page">
+	<div class="page-header">
+		<span>
+			{{ _('Weight Class List') }}
+		</span>
+		<div class="pull-right m-t-10">
+			{% include 'block/_select_items.html' %}
+			<a href="{{ url_for('admin.create_weight') }}" class="btn btn-icon btn-primary" data-toggle="tooltip" data-original-title="{{ _('Add New') }}">
+				<i class="fa fa-plus"></i>
+			</a>
+			<button type="button" data-form-id="form-weights" class="btn btn-icon btn-danger delete-all hidden" data-toggle="tooltip" data-original-title="{{ _('Delete') }}">
+				<i class="fa fa-trash-o"></i>
+			</button>
+		</div>
+	</div>
+
+	<div class="card-box table-responsive">
+		<form id="form-weights" action="{{ url_for('admin.delete_weight') }}" method="post">
+			<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" >
+
+			<table class="table table-bordered table-hover" role="grid">
+				<thead>
+					<tr role="row">
+						<th class="text-center">
+							<input name="check_all" type="checkbox" class="check-all">
+						</th>
+						<th class="text-center">Weight Title</th>
+						<th class="text-center">Weight Unit</th>
+						<th class="text-right">Value</th>
+						<th class="text-right">Action</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					{% for w in paginated_weights.items %}
+					<tr role="row">
+						<td class="text-center">
+							<input name="selected[]" class="check-one" value="{{ w.id }}" type="checkbox">
+						</td>
+						<td class="text-center">
+							{{ w.weight_descriptions[0].title }}
+						</td>
+						<td class="text-center">{{ w.weight_descriptions[0].unit }}</td>
+						<td class="text-right">{{ w.value }}</td>
+						<td class="actions text-right">
+							<a href="{{ url_for('admin.edit_weight', id=w.id) }}" class="btn btn-link" data-toggle="tooltip" data-original-title="{{ _('Edit') }}">
+								{{ _('Edit') }}
+							</a>
+						</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+
+		</form>
+
+		{% import "block/_macros.html" as macros %}
+		<div class="pagesbar">
+			<div class="pages-entries">
+				Showing {{ paginated_weights.offset_start }} to {{ paginated_weights.offset_end }} of {{ paginated_weights.total }} entries (total {{ paginated_weights.pages }} pages)
+			</div>
+			<div class="pull-right">
+				{{ macros.pagination_widget(paginated_weights, '.show_weights') }}
+			</div>
+		</div>
+	</div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends pjax("layout/admin.html") %}
+
+{% block page_content %}
+<div class="list-page">
+
+	<div class="page-header">
+		<span>
+			{{ _('Currency List') }}
+		</span>
+		<div class="pull-right m-t-10">
+			{% include 'block/_select_items.html' %}
+			<a href="{{ url_for('admin.create_currency') }}" class="btn btn-icon btn-primary" data-toggle="tooltip" data-original-title="{{ _('Add New') }}">
+				<i class="fa fa-plus"></i>
+			</a>
+			<button type="button" data-form-id="form-currencies" class="btn btn-icon btn-danger delete-all hidden" data-toggle="tooltip" data-original-title="{{ _('Delete') }}">
+				<i class="fa fa-trash-o"></i>
+			</button>
+		</div>
+	</div>
+
+	<div class="card-box table-responsive">
+		<form id="form-currencies" action="{{ url_for('admin.delete_currency') }}" method="post">
+			<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" >
+
+			<table class="table table-bordered table-hover" role="grid">
+				<thead>
+				<tr role="row">
+					<th class="text-center">
+						<input name="check_all" type="checkbox" class="check-all">
+					</th>
+					<th>Currency Title</th>
+					<th >Code</th>
+					<th class="text-right">Value</th>
+					<th class="text-right">Last Updated</th>
+					<th class="text-right">Action</th>
+				</tr>
+				</thead>
+
+				<tbody>
+				{% for currency in paginated_currencies.items %}
+				<tr role="row">
+					<td class="text-center">
+						<input name="selected[]" class="check-one" value="{{ currency.id }}" type="checkbox">
+					</td>
+					<td>{{ currency.title }}</td>
+					<td>{{ currency.code }}</td>
+					<td class="text-right">{{ currency.value }}</td>
+					<td class="text-right">
+						{{ currency.last_updated }}
+					</td>
+					<td class="actions text-right">
+						<a href="{{ url_for('admin.edit_currency', id=currency.id) }}" class="btn btn-link" data-toggle="tooltip" data-original-title="{{ _('Edit') }}">
+							{{ _('Edit') }}
+						</a>
+					</td>
+				</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</form>
+
+		{% import "block/_macros.html" as macros %}
+		<div class="pagesbar">
+			<div class="pull-left">
+				<div class="pages-entries">
+					Showing {{ paginated_currencies.offset_start }} to {{ paginated_currencies.offset_end }} of {{ paginated_currencies.total }} entries (total {{ paginated_currencies.pages }} pages)
+				</div>
+			</div>
+			<div class="pull-right">
+				{{ macros.pagination_widget(paginated_currencies, '.show_categories') }}
+			</div>
+		</div>
+
+	</div>
+
+</div>
+{% endblock %}

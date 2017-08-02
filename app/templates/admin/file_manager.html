@@ -1,10 +1,245 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% import "block/_macros.html" as macros %}
+
+<div class="modal-dialog modal-lg" id="file_manager">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h4 class="modal-title" id="myLargeModalLabel">{{ _('File Manager') }}</h4>
+		</div>
+		<div class="modal-body">
+			<div class="row">
+				<div class="col-sm-5">
+					<a href="{{ url_for('admin.show_asset') }}?directory={{ parent_directory }}&up_target={{ up_target }}" data-toggle="tooltip" id="button-parent" class="btn btn-default" data-original-title="{{ _('Parent') }}">
+						<i class="fa fa-level-up"></i>
+					</a>
+					<a href="{{ url_for('admin.show_asset') }}?directory={{ current_directory }}&up_target={{ up_target }}" data-toggle="tooltip" id="button-refresh" class="btn btn-default" data-original-title="{{ _('Refresh') }}">
+						<i class="fa fa-refresh"></i>
+					</a>
+					<button type="button" data-toggle="tooltip" id="uploader_browse" class="btn btn-primary" data-original-title="{{ _('Upload') }}">
+						<i class="fa fa-upload"></i>
+					</button>
+					<button type="button" data-toggle="tooltip" id="button-folder" class="btn btn-default" data-original-title="{{ _('New Folder') }}">
+						<i class="fa fa-folder"></i>
+					</button>
+					<button type="button" data-toggle="tooltip" id="button-delete" class="btn btn-danger" data-original-title="{{ _('Delete') }}">
+						<i class="fa fa-trash-o"></i>
+					</button>
+				</div>
+				<div class="col-sm-7">
+					<div id="uploader"></div>
+				</div>
+			</div>
+			<hr>
+			<div class="row" id="uploader_result">
+				{% for d in all_directory %}
+				<div class="col-sm-3 col-xs-6 text-center">
+					<div class="text-center">
+						<a href="{{ url_for('admin.show_asset') }}?up_target={{ up_target }}&directory={% if current_directory %}{{ current_directory }}/{% endif %}{{ d.name }}" class="directory" style="vertical-align: middle;">
+							<i class="fa fa-folder fa-5x"></i>
+						</a>
+					</div>
+					<label>
+						<input name="path[]" value="{{ d.name }}" type="checkbox">
+						{{ d.name|safe }}
+					</label>
+				</div>
+				{% endfor %}
+
+				{% for a in paginated_assets.items %}
+				<div class="col-sm-3 col-xs-6 text-center">
+					<a href="{{ a.view_url }}" class="thumbnail" data-target="{{ a.id }}">
+						<img src="{{ a.view_url }}" alt="{{ a.filename }}" title="{{ a.filename }}">
+					</a>
+					<label>
+						<input name="path[]" value="{{ a.filepath }}" type="checkbox">
+						{{ a.filename|short_filename }}
+					</label>
+				</div>
+				{% endfor %}
+
+			</div>
+		</div>
+		<div class="modal-footer">
+			<div class="pull-right">
+				{{ macros.pagination_widget(paginated_assets, '.show_asset', directory=current_directory, up_target=up_target) }}
+			</div>
+		</div>
+	</div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+
+<script type="text/javascript"><!--
+	$('[data-toggle="tooltip"]').tooltip({
+		container: 'body',
+		html: true,
+		trigger: 'hover'
+	});
+
+	var hock_thumbnail = function () {
+		$('a.thumbnail').on('click', function(e) {
+			e.preventDefault();
+			var asset_id = $(this).data('target');
+
+			$('#{{ up_target }}_thumb_image').find('img').attr('src', $(this).find('img').attr('src'));
+
+			$('#{{ up_target }}_id').val(asset_id);
+
+			$('#modal-image').modal('hide');
+		});
+	};
+
+	// hock img thumbnail
+	hock_thumbnail();
+
+	$('a.directory').on('click', function(e) {
+		e.preventDefault();
+
+		var args = mic.get_url_params($(this).attr('href'));
+		if (args || args != null) {
+			$.cookie('img_last_open_folder', args['directory']);
+		}
+
+		$('#modal-image').load($(this).attr('href'));
+	});
+
+	$('.pagination a').on('click', function(e) {
+		e.preventDefault();
+
+		$('#modal-image').load($(this).attr('href'));
+	});
+
+	$('#button-parent').on('click', function(e) {
+		e.preventDefault();
+
+		$('#modal-image').load($(this).attr('href'));
+	});
+
+	$('#button-refresh').on('click', function(e) {
+		e.preventDefault();
+
+		$('#modal-image').load($(this).attr('href'));
+	});
+
+	$('#button-folder').popover({
+		html: true,
+		placement: 'bottom',
+		trigger: 'click',
+		title: 'directory name',
+		content: function() {
+			var html  = '<div class="input-group">';
+			html += '  <input type="text" name="folder" placeholder="{{ _('characters or underscore') }}" class="form-control">';
+			html += '  <span class="input-group-btn"><button type="button" title="New directory" id="button-create" class="btn btn-primary"><i class="fa fa-plus"></i></button></span>';
+			html += '</div>';
+
+			return html;
+		}
+	});
+
+	$('#button-folder').on('shown.bs.popover', function() {
+		$('#button-create').on('click', function() {
+			var $btn = $(this);
+			$.ajax({
+				url: '{{ url_for("admin.folder") }}',
+				type: 'post',
+				dataType: 'json',
+				data: {
+					folder: encodeURIComponent($('input[name=\'folder\']').val()),
+					parent_directory: '{{ current_directory }}',
+					csrf_token: csrf_token
+				},
+				beforeSend: function() {
+					$('#button-create').prop('disabled', true);
+				},
+				complete: function() {
+					$('#button-create').prop('disabled', false);
+				},
+				success: function(result) {
+					if (result['success']) {
+						$('#button-refresh').trigger('click');
+					} else {
+						$btn
+							.parent().parent()
+							.before(mic.display_alert(result['status']['message']));
+					}
+				},
+				error: function(xhr, ajaxOptions, thrownError) {
+					alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+				}
+			});
+		});
+	});
+
+	$("#uploader").pluploadQueue({
+        // General settings
+        url : '{{ url_for("admin.flupload") }}',
+
+        chunk_size : '1mb',
+        rename : false,
+        dragdrop: true,
+		multiple_queues: true,
+		multipart_params: {
+        	'directory': '{{ current_directory }}',
+			'csrf_token': csrf_token
+		},
+        filters : {
+            // Maximum file size
+            max_file_size : '10mb',
+            // Specify what files to browse for
+            mime_types: [
+                {title : 'Image files', extensions : 'jpg,jpeg,gif,png'}
+            ]
+        },
+
+        flash_swf_url : "{{ url_for('static', filename='js/Moxie.swf', _external=True) }}",
+
+		silverlight_xap_url : "{{ url_for('static', filename='js/Moxie.xap', _external=True) }}"
+    });
+
+	$('#modal-image #button-delete').on('click', function(e) {
+		swal({
+			title: "Confirm to delete?",
+			text: "You will not be able to recover!",
+			type: "warning",
+			showCancelButton: true,
+			confirmButtonClass: 'btn-warning',
+			confirmButtonText: "Yes, delete it!",
+			closeOnConfirm: true
+		}, function (is_confirm) {
+			if (is_confirm) {
+				var path = [];
+				$('input[name^=\'path\']:checked').each(function () {
+					path.push($(this).val());
+				});
+				var data = {
+					'path[]': path,
+					'csrf_token': csrf_token
+				};
+
+				$.ajax({
+					url: '{{ url_for("admin.pldelete") }}',
+					type: 'post',
+					dataType: 'json',
+					data: data,
+					beforeSend: function() {
+						$('#button-delete').prop('disabled', true);
+					},
+					complete: function() {
+						$('#button-delete').prop('disabled', false);
+					},
+					success: function(json) {
+						if (json['error']) {
+							swal('Error', json['error'], 'error');
+						}
+
+						if (json['success']) {
+							$('#button-refresh').trigger('click');
+						}
+					},
+					error: function(xhr, ajaxOptions, thrownError) {
+						alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+					}
+				});
+			}
+		});
+	});
+
+//--></script>

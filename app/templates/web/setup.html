@@ -1,0 +1,69 @@
+{% extends 'layout/base.html' %}
+
+{% block private_styles %}
+
+{% endblock private_styles %}
+
+{% block page_content %}
+<div class="one-page">
+	<div class="card">
+		<h3 class="text-center m-b-30">{{ _('Start registration and opening of stores') }}</h3>
+		<form class="form" action="" id="setup-form" method="post">
+			{{ form.hidden_tag() }}
+
+			<div class="form-group m-b-20 required {% if form.errors.email %} has-error{% endif %}">
+				{{ form.email.label(class="control-label") }}
+				{{ form.email(class="form-control", id="email") }}
+				{% for error in form.errors.email %}
+				<span class="help-block">{{ error }}</span><br>
+				{% endfor %}
+  			</div>
+
+			<div class="form-group m-b-20 required {% if form.errors.password %} has-error{% endif %}">
+				{{ form.password.label(class="control-label") }}
+				{{ form.password(class="form-control", id="password") }}
+				{% for error in form.errors.password %}
+				<span class="help-block">{{ error }}</span><br>
+				{% endfor %}
+  			</div>
+
+			<div class="form-group m-b-20 required {% if form.errors.store_name %} has-error{% endif %}">
+				{{ form.store_name.label(class="control-label") }}
+				{{ form.store_name(class="form-control", id="store_name") }}
+				{% for error in form.errors.store_name %}
+				<span class="help-block">{{ error }}</span><br>
+				{% endfor %}
+  			</div>
+
+			<div class="form-group text-center m-b-20">
+				<button class="btn btn-primary">{{ _('Getting started') }}</button>
+  			</div>
+
+		</form>
+	</div>
+
+	<div class="extra-info">
+		<div class="col-sm-4 none-padding">
+			<div class="dropdown clearfix">
+				<button class="btn btn-flat-default dropdown-toggle" type="button" id="dropdown-languages" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					{{ _('Select Languages') }}
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" aria-labelledby="dropdown-languages">
+					{% for lang in support_languages %}
+					<li {% if g.locale == lang[1] %}class="active"{% endif %}>
+						<a href="/{{ lang[1] }}">{{ lang[2] }}</a>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+
+		<div class="col-sm-8 text-right none-padding">
+			<a href="#" class="m-l-10">{{ _('Help?') }}</a>
+			<a href="#" class="m-l-10">{{ _('Terms') }}</a>
+		</div>
+	</div>
+
+</div>
+{% endblock page_content %}

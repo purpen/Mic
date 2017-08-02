@@ -1,0 +1,120 @@
+{% extends "layout/admin.html" %}
+
+{% block page_content %}
+<div class="list-page">
+	<div class="page-header">
+		<span>{{ _('Site Manage') }}</span>
+
+		<div class="pull-right m-t-10">
+			<button type="submit" form="form-store" class="btn btn-icon btn-primary" data-toggle="tooltip" data-original-title="{{ _('Save') }}">
+				<i class="fa fa-save"></i>
+			</button>
+		</div>
+	</div>
+
+	<ul class="nav nav-tabs nav-tabs-google">
+		<li class="active">
+			<a href="#tab-general">{{ _('General') }}</a>
+		</li>
+		<li>
+			<a href="#tab-data">{{ _('Site Domain') }}</a>
+		</li>
+		<li>
+			<a href="#tab-data">{{ _('Site SEO') }}</a>
+		</li>
+		<li>
+			<a href="#tab-data">{{ _('Advanced Setting') }}</a>
+		</li>
+	</ul>
+
+	<div class="card-box m-t-20">
+		<div class="row">
+			<div class="col-md-8">
+
+				<form class="form-horizontal" role="form" method="post" id="form-store" action="">
+					<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+					<div class="form-group">
+						{{ form.name.label(class="col-md-2 control-label") }}
+						<div class="col-md-10">
+							{{ form.name(class="form-control") }}
+						</div>
+					</div>
+
+					<div class="form-group">
+						{{ form.domain.label(class="col-md-2 control-label") }}
+						<div class="col-md-10">
+
+						</div>
+					</div>
+
+					<div class="form-group">
+						{{ form.description.label(class="col-md-2 control-label") }}
+						<div class="col-md-10">
+							{{ form.description(class="form-control", rows="3") }}
+						</div>
+					</div>
+
+					<div class="form-group">
+						{{ form.status.label(class="col-md-2 control-label") }}
+						<div class="col-md-10">
+							{{ form.status(class="form-control select2") }}
+						</div>
+					</div>
+
+					<div class="form-group">
+						{{ form.copyright.label(class="col-md-2 control-label") }}
+						<div class="col-md-10">
+							{{ form.copyright(class="form-control") }}
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-md-2 control-label">
+							{{ _('Favicon') }}
+						</label>
+						<div class="col-md-10">
+
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-md-2 control-label">
+							{{ _('Site Languages') }}
+						</label>
+						<div class="col-md-10">
+							<div class="checkbox">
+								{% for lang in languages %}
+								<label class="checkbox-inline">
+									<input type="checkbox" name="languages[]" value="{{ lang.id }}"> {{ lang.name }}
+								</label>
+								{% endfor %}
+							</div>
+
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-md-2 control-label">
+							{{ _('Site Currency') }}
+						</label>
+						<div class="col-md-10">
+							<div class="checkbox">
+								{% for cury in currencies %}
+								<label class="checkbox-inline">
+									<input type="checkbox" name="currencies[]" value="{{ cury.id }}"> {{ cury.title }}
+								</label>
+								{% endfor %}
+							</div>
+						</div>
+					</div>
+
+
+				</form>
+
+			</div>
+		</div>
+	</div>
+
+</div>
+{% endblock %}

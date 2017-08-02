@@ -1,22 +1,76 @@
 {% extends "layout/admin.html" %}
+{% import "block/_macros.html" as macros %}
 
 {% block page_content %}
-<div class="container">
-	<div class="row">
-		<div class="col-sm-12">
-			<ul class="nav nav-pills nav-pills-custom display-xs-none pull-right">
-				<li role="presentation">
-					<a href="#">Today</a>
-				</li>
-				<li role="presentation" class="active">
-					<a href="#">Yesterday</a>
-				</li>
-				<li role="presentation">
-					<a href="#">Last Week</a>
-				</li>
-			</ul>
-			<h4 class="page-title">Dashboard</h4>
+<div class="list-page">
+	<div class="page-header">
+		<span>{{ _('Product List') }}</span>
+
+		<div class="pull-right m-t-10">
+			{% include 'block/_select_items.html' %}
+			<a href="{{ url_for('admin.create_product') }}" class="btn btn-icon btn-primary" data-toggle="tooltip" data-original-title="{{ _('Add New') }}">
+				<i class="fa fa-plus"></i>
+			</a>
+			<button type="button" data-form-id="form-products" class="btn btn-icon btn-danger delete-all hidden" data-toggle="tooltip" data-original-title="{{ _('Delete') }}">
+				<i class="fa fa-trash-o"></i>
+			</button>
 		</div>
 	</div>
+	<div class="card-box table-responsive">
+		<form id="form-products" action="{{ url_for('admin.delete_product') }}" method="post">
+			<table class="table table-bordered table-hover" role="grid">
+				<thead>
+				<tr role="row">
+					<th class="text-center">
+						<input name="check_all" type="checkbox" class="check-all">
+					</th>
+					<th class="text-center">Image</th>
+					<th>Name</th>
+					<th>Model</th>
+					<th>Price</th>
+					<th>Quantity</th>
+					<th class="text-right">Status</th>
+					<th class="text-right">Action</th>
+				</tr>
+				</thead>
+
+				<tbody>
+				{% for lang in paginated_products.items %}
+				<tr role="row">
+					<td class="text-center">
+						<input name="selected[]" class="check-one" value="{{ lang.id }}" type="checkbox">
+					</td>
+					<td class="text-center">
+						<img src="{{ lang.icon.view_url }}" width="60px">
+					</td>
+					<td>{{ lang.name }}</td>
+					<td>{{ lang.code }}</td>
+					<td>{{ lang.name }}</td>
+					<td>{{ lang.code }}</td>
+					<td class="text-right">{{ lang.sort_order }}</td>
+					<td class="actions text-right">
+						<a href="{{ url_for('admin.edit_language', id=lang.id) }}" class="btn btn-icon btn-primary waves-effect waves-light" data-toggle="tooltip" data-original-title="{{ _('Edit') }}">
+							<i class="fa fa-pencil"></i>
+						</a>
+					</td>
+				</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</form>
+
+		<div class="pagesbar">
+			<div class="pull-left">
+				<div class="pages-entries">
+					Showing {{ paginated_products.offset_start }} to {{ paginated_products.offset_end }} of {{ paginated_products.total }} entries (total {{ paginated_products.pages }} pages)
+				</div>
+			</div>
+			<div class="pull-right">
+				{{ macros.pagination_widget(paginated_products, '.show_products') }}
+			</div>
+		</div>
+
+	</div>
+
 </div>
 {% endblock %}

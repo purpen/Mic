@@ -3,7 +3,7 @@
 	__init__.py
 	~~~~~~~~~~~~~~
 
-	:copyright: (c) 2017 by purpen.
+	:copyright: (c) 2017 by mic.
 """
 
 from flask import Flask
@@ -21,6 +21,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, current_user
 # 国际化和本地化
 from flask_babelex import Babel
+from flask_pjax import PJAX
+# 导入上传
+from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
+from flask_wtf.csrf import CSRFProtect
 
 # 导入配置参数
 from config import config
@@ -31,6 +35,10 @@ moment = Moment()
 db = SQLAlchemy()
 mail = Mail()
 babel = Babel()
+pjax = PJAX()
+# 创建set
+uploader = UploadSet('photos', IMAGES)
+csrf = CSRFProtect()
 
 # Flask-Login初始化
 login_manager = LoginManager()
@@ -50,6 +58,14 @@ def create_app(config_name):
     db.init_app(app)
     mail.init_app(app)
     login_manager.init_app(app)
+    pjax.init_app(app)
+    csrf.init_app(app)
+
+
+    # 初始化
+    configure_uploads(app, uploader)
+    # 文件大小限制，默认为16MB
+    patch_request_class(app)
 
     # logging setting
     if not app.debug:
@@ -73,15 +89,15 @@ def create_app(config_name):
     from .admin import admin
     app.register_blueprint(admin, url_prefix='/admin')
 
-    from .blog import blog
-    app.register_blueprint(blog)
-
     from .auth import auth
     app.register_blueprint(auth, url_prefix='/auth')
 
     # API REST
     from .api_1_0 import api as api_1_0
     app.register_blueprint(api_1_0, url_prefix='/api/v1.0')
+
+    from .blog import blog
+    app.register_blueprint(blog)
 
     # 附加路由和自定义的错误页面
 
@@ -93,5 +109,9 @@ def create_app(config_name):
         '//cdn.bootcss.com/bootstrap/3.3.7/'
     )
 
+    from .main.filters import timestamp2string, short_filename, supress_none
+    app.add_template_filter(timestamp2string, 'timestamp2string')
+    app.add_template_filter(short_filename, 'short_filename')
+    app.add_template_filter(supress_none, 'supress_none')
 
     return app

@@ -1,10 +1,357 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title>$Title$</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+	<meta name="author" content="Mic">
+	<link rel="shortcut icon" href="{{ url_for('static', filename = 'images/favicon.png') }}"
+type="image/x-icon">
+	<link rel="icon" href="{{ url_for('static', filename = 'images/favicon.png') }}"
+type="image/x-icon">
+	<title>Mixpus</title>
+
+	<style type="text/css">
+		@font-face {
+		  	font-family: 'FontAwesome';
+		  	src: url('/static/css/font/fontawesome-webfont.eot?v=4.7.0');
+		  	src: url('/static/css/font/fontawesome-webfont.eot?#iefix&v=4.7.0') format('embedded-opentype'), url('/static/css/font/fontawesome-webfont.woff2?v=4.7.0') format('woff2'), url('/static/css/font/fontawesome-webfont.woff?v=4.7.0') format('woff'), url('/static/css/font/fontawesome-webfont.ttf?v=4.7.0') format('truetype'), url('/static/css/font/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular') format('svg');
+		  	font-weight: normal;
+		  	font-style: normal;
+		}
+	</style>
+
+	{%- block styles %}
+    <!-- Bootstrap -->
+	<link href="{{ url_for('static', filename='css/bootstrap.min.css', _external=True) }}" rel="stylesheet" type="text/css">
+	<link href="{{ url_for('static', filename='css/todc-bootstrap.css', _external=True) }}" rel="stylesheet" type="text/css">
+	<link href="{{ url_for('static', filename='css/font-awesome.css', _external=True) }}" rel="stylesheet" type="text/css">
+	<link href="{{ url_for('static', filename='css/nprogress.css', _external=True) }}" rel="stylesheet" type="text/css">
+	<link href="{{ url_for('static', filename='css/jquery.plupload.queue.css', _external=True) }}" rel="stylesheet" type="text/css">
+	<link href="{{ url_for('static', filename='css/select2.css', _external=True) }}" rel="stylesheet" type="text/css">
+	<link href="{{ url_for('static', filename='css/sweet-alert.css', _external=True) }}" rel="stylesheet" type="text/css">
+	<link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet" type="text/css">
+    {%- endblock styles %}
+
+	{%- block private_styles %}
+	{%- endblock private_styles %}
+
+	<link href="{{ url_for('static', filename='css/admin.css') }}" rel="stylesheet" type="text/css">
 </head>
+
 <body>
-$END$
+	<nav class="navbar navbar-default navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">Mixpus</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav navbar-right">
+					<li>
+						<a href="#">
+							<span class="badge badge-danger">{{ _('Free Vision') }}</span>
+						</a>
+					</li>
+					<li>
+						<a href="javascript:void(0);" title="{{ _('Select languages') }}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">
+							<span class="fa fa-globe"></span>
+						</a>
+						<ul class="dropdown-menu">
+							{% for lang in support_languages %}
+							<li {% if g.locale == lang[1] %}class="active"{% endif %}>
+								<a href="/{{ lang[1] }}">{{ lang[2] }}</a>
+							</li>
+							{% endfor %}
+						</ul>
+					</li>
+					<li>
+						<a href="javascript:void(0);">
+							<span class="fa fa-bell"></span>
+						</a>
+					</li>
+					<li class="dropdown">
+						<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button"  aria-haspopup="true" aria-expanded="true">
+							<span class="fa fa-user"></span>
+							{% if current_user.is_authenticated %}
+							{{ current_user.username }}
+							{% endif %}
+						</a>
+						<ul class="dropdown-menu">
+							<li><a href="{{ url_for('admin.settings') }}">{{ _('Account Settings') }}</a></li>
+							<li><a href="{{ url_for('admin.settings') }}">{{ _('Preferences') }}</a></li>
+							<li><a href="{{ url_for('admin.index') }}">{{ _('Update Password') }}</a></li>
+							<li role="separator" class="divider"></li>
+							<li><a href="{{ url_for('auth.logout') }}">{{ _('Sign Out') }}</a></li>
+						</ul>
+					</li>
+					<li><a href="#">Help</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-3 col-md-2 sidebar">
+				<ul class="nav nav-sidebar">
+					<li class="nav-header">
+						<i class="fa fa-dashboard"></i> <span class="m-l-5">{{ _('Dashboard') }}</span>
+					</li>
+					<li>
+						<ul class="children">
+							<li>
+								<a href="{{ url_for('admin.index') }}" class="pjax nav-pjax">{{ _('Overview') }}</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="nav nav-sidebar">
+					<li class="nav-header">
+						<i class="fa fa-cubes"></i> <span class="m-l-5"> {{ _('Catalog')}} </span>
+					</li>
+					<li>
+						<ul class="children">
+							<li>
+								<a href="{{ url_for('admin.show_categories') }}" class="pjax nav-pjax">{{ _('Category List') }}</a>
+							</li>
+							<li>
+								<a href="{{ url_for('admin.show_brands') }}" class="pjax nav-pjax">{{ _('Brand List') }}</a>
+							</li>
+							<li>
+								<a href="{{ url_for('admin.show_products') }}" class="pjax nav-pjax">{{ _('Product list') }}</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="nav nav-sidebar">
+					<li class="nav-header">
+						<i class="fa fa-shopping-cart"></i> <span class="m-l-5"> {{ _('Sales')}} </span>
+					</li>
+					<li>
+						<ul class="children">
+							<li>
+								<a href="#">{{ _('Orders') }}</a>
+							</li>
+							<li>
+								<a href="#">{{ _('Returns') }}</a>
+							</li>
+							<li>
+								<a href="#">{{ _('Customers') }}</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="nav nav-sidebar">
+					<li class="nav-header">
+						<i class="fa fa-cogs"></i> <span class="m-l-5"> {{ _('Settings')}} </span>
+					</li>
+					<li>
+						<ul class="children">
+							<li>
+								<a href="{{ url_for('admin.site') }}" class="pjax nav-pjax">{{ _('Site Manage') }}</a>
+							</li>
+							<li>
+								<a href="#">{{ _('Child Users') }}</a>
+							</li>
+							<li>
+								<a href="{{ url_for('admin.show_uploads') }}">{{ _('Uploads') }}</a>
+							</li>
+
+							<li>
+								<a href="{{ url_for('admin.show_zones') }}" class="pjax nav-pjax">{{ _('Zones') }}</a>
+							</li>
+							<li>
+								<a href="{{ url_for('admin.show_geo_zones') }}">{{ _('Geo Zones') }}</a>
+							</li>
+							<li>
+								<a href="javascript:void(0);" class="hidden">{{ _('Taxes') }}</a>
+							</li>
+							<li>
+								<a href="{{ url_for('admin.show_lengths') }}" class="pjax nav-pjax">{{ _('Length Classes') }}</a>
+							</li>
+							<li>
+								<a href="{{ url_for('admin.show_weights') }}" class="pjax nav-pjax">{{ _('Weight Classes') }}</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="nav nav-sidebar">
+					<li class="nav-header">
+						<i class="fa fa-area-chart"></i> <span class="m-l-5"> {{ _('Reports')}} </span>
+					</li>
+					<li>
+						<ul class="children">
+							<li>
+								<a href="#">{{ _('Sales') }}</a>
+							</li>
+							<li>
+								<a href="#">{{ _('Products') }}</a>
+							</li>
+							<li>
+								<a href="#">{{ _('Customers') }}</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="nav nav-sidebar">
+					<li class="nav-header">
+						<i class="fa fa-file-text"></i> <span class="m-l-5"> {{ _('Pages')}} </span>
+					</li>
+					<li>
+						<ul class="children">
+							<li>
+								<a href="#">{{ _('Single Page') }}</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="nav nav-sidebar">
+					<li class="nav-header">
+						<i class="fa fa-share-alt"></i> <span class="m-l-5"> {{ _('Marketing')}} </span>
+					</li>
+					<li>
+						<ul class="children">
+							<li>
+								<a href="#">{{ _('Affilicates') }}</a>
+							</li>
+							<li>
+								<a href="#">{{ _('Coupons') }}</a>
+							</li>
+							<li>
+								<a href="#">{{ _('Mail') }}</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="nav nav-sidebar">
+					<li class="nav-header">
+						<i class="fa fa-wrench"></i> <span class="m-l-5"> {{ _('Tools')}} </span>
+					</li>
+					<li>
+						<ul class="children">
+							<li>
+								<a href="#" class="disabled">{{ _('Backup / Restore') }}</a>
+							</li>
+							<li>
+								<a href="#" class="disabled">{{ _('Error Logs') }}</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+
+				<ul class="nav nav-sidebar">
+					<li class="nav-header">
+						<i class="fa fa-wrench"></i> <span class="m-l-5"> {{ _('System')}} </span>
+					</li>
+					<li>
+						<ul class="children">
+							<li>
+								<a href="{{ url_for('admin.show_languages') }}" class="pjax nav-pjax">{{ _('Languages') }}</a>
+							</li>
+							<li>
+								<a href="{{ url_for('admin.show_currencies') }}" class="pjax nav-pjax">{{ _('Currencies') }}</a>
+							</li>
+							<li>
+								<a href="{{ url_for('admin.show_countries') }}" class="pjax nav-pjax">{{ _('Countries') }}</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+
+				<footer class="footer m-b-30">
+					2017-2018 © Mixpus.
+				</footer>
+			</div>
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+				<div class="content" id="pjax-container">
+					{% with messages = get_flashed_messages(with_categories=true) %}
+						{% if messages %}
+						<div class="flashes">
+							{% for category, message in messages %}
+							<div class="alert alert-{{ category }} alert-dismissable">
+								<button class="close" type="button" data-dismiss="alert" aria-hidden="true">×</button>
+								{% if category == 'success' %}
+								<strong>Well done!</strong>
+								{% endif %}
+
+								{% if category == 'danger' %}
+								<strong>Oh snap!</strong>
+								{% endif %}
+
+								{{ message }}
+							</div>
+							{% endfor %}
+						</div>
+						{% endif %}
+					{% endwith %}
+
+					{% block page_content %}{% endblock %}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{% block scripts %}
+	<script type="text/javascript">
+		var img_last_open_folder = '', current_menu='{{ current_menu }}', csrf_token = "{{ csrf_token() }}", locale_label="{{ _('items selected') }}";
+		var container_id = '#pjax-container';
+	</script>
+	<script src="{{ url_for('static', filename='js/jquery.min.js', _external=True) }}" type="text/javascript"></script>
+	<script src="{{ url_for('static', filename='js/bootstrap.min.js', _external=True) }}" type="text/javascript"></script>
+	<script src="{{ url_for('static', filename='js/jquery.pjax.js', _external=True) }}" type="text/javascript"></script>
+	<script src="{{ url_for('static', filename='js/nprogress.js', _external=True) }}" type="text/javascript"></script>
+	<script src="{{ url_for('static', filename='js/moment.js', _external=True) }}" type="text/javascript"></script>
+	<script src="{{ url_for('static', filename='js/bootstrap-datetimepicker.min.js', _external=True) }}" type="text/javascript"></script>
+	<script src="{{ url_for('static', filename='js/jquery.cookie.js', _external=True) }}" type="text/javascript"></script>
+	<script src="{{ url_for('static', filename='js/plupload.full.min.js', _external=True) }}" type="text/javascript"></script>
+	<script src="{{ url_for('static', filename='js/jquery.plupload.queue.js') }}" type="text/javascript"></script>
+	<script src="{{ url_for('static', filename='js/select2.js', _external=True) }}" type="text/javascript"></script>
+	<script src="{{ url_for('static', filename='js/sweet-alert.min.js', _external=True) }}" type="text/javascript"></script>
+	<script src="{{ url_for('static', filename='js/i18n/zh_CN.js', _external=True) }}" type="text/javascript"></script>
+    {%- endblock scripts %}
+
+	{% block private_scripts %}
+	{%- endblock private_scripts%}
+
+	<script src="{{ url_for('static', filename='js/app.js') }}" type="text/javascript"></script>
+	<script type="text/javascript">
+		// 打开页面时加载进度条。
+		NProgress.start();
+
+		jQuery(document).ready(function(){
+
+			"use strict";
+
+			NProgress.done();
+
+    		$(container_id).stop(true,true).fadeIn();
+
+			mic.hook_check_all();
+			mic.hook_delete_all();
+
+			$(".form_datetime").datetimepicker({
+				minView: "month",
+				language: "{{ g.locale|default('en') }}",
+				format: "yyyy-mm-dd",
+				autoclose: true,
+				todayBtn: true
+			});
+
+			$('.form-date span.input-group-addon').click(function () {
+				$(this).prev('.form_datetime').focus();
+			});
+
+			{% block jquery %}
+				// current document scripts
+    		{%- endblock jquery %}
+
+		});
+	</script>
+
 </body>
 </html>

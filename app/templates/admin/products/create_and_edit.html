@@ -1,0 +1,322 @@
+{% extends "layout/admin.html" %}
+
+{% block private_styles %}
+<link href="{{ url_for('static', filename='css/summernote.css', _external=True) }}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block private_scripts %}
+<script src="{{ url_for('static', filename='js/summernote.js', _external=True) }}" type="text/javascript"></script>
+<script src="{{ url_for('static', filename='js/mic.editor.js', _external=True) }}" type="text/javascript"></script>
+{% endblock %}
+
+{% block page_content %}
+<div class="form-page">
+	<div class="page-header">
+		<span>
+			{% if mode == 'create' %}
+				{{ _('Add Product') }}
+			{% else %}
+				{{ _('Edit Product') }}
+			{% endif %}
+		</span>
+		<div class="pull-right m-t-10">
+			<button type="submit" form="form-product" class="btn btn-icon btn-primary" data-toggle="tooltip" data-original-title="{{ _('Save') }}">
+				<i class="fa fa-save"></i>
+			</button>
+			<a href="{{ url_for('admin.show_products') }}" class="btn btn-icon btn-default" data-toggle="tooltip" data-original-title="{{ _('Cancel') }}">
+				<i class="fa fa-reply"></i>
+			</a>
+		</div>
+	</div>
+
+	<div class="card-box">
+		<form class="form-horizontal" role="form" method="post" id="form-category" action="">
+			{{ form.hidden_tag() }}
+
+			<ul class="nav nav-tabs nav-tabs-google">
+				<li class="active"><a href="#tab-general" data-toggle="tab">{{ _('General') }}</a></li>
+				<li><a href="#tab-data" data-toggle="tab">{{ _('Data') }}</a></li>
+			</ul>
+
+			<div class="tab-content m-t-20">
+				<div id="tab-general" class="tab-pane active">
+					<ul class="nav nav-tabs" id="language">
+						{% for lang in languages %}
+						<li {% if loop.first %}class="active"{% endif %}>
+							<a href="#language{{ lang.id }}" data-toggle="tab" aria-expanded="true">
+								<img src="{{ lang.icon.view_url }}" title="{{ lang.name }}"> {{ lang.name }}
+							</a>
+						</li>
+						{% endfor %}
+					</ul>
+					<div class="tab-content m-t-20">
+						{% for lang in languages %}
+						<div id="language{{ lang.id }}" class="tab-pane {% if loop.first %} active{% endif %}">
+							<div class="form-group required">
+								<label class="col-md-2 control-label">{{ _('Product Name') }}</label>
+								<div class="col-md-10">
+									<input class="form-control" name="product_description[{{ lang.id }}][name]" value="{% if all_descriptions %}{{ all_descriptions[lang.id]['name'] }}{% endif %}" type="text">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">{{ _('Description') }}</label>
+								<div class="col-md-10">
+									<textarea name="product_description[{{ lang.id }}][description]" class="form-control summernote">{% if all_descriptions %}{{ all_descriptions[lang.id]['description'] }}{% endif %}</textarea>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">{{ _('Meta Title') }}</label>
+								<div class="col-md-10">
+									<input class="form-control" name="product_description[{{ lang.id }}][meta_title]" value="{% if all_descriptions %}{{ all_descriptions[lang.id]['meta_title'] }}{% endif %}" type="text">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">{{ _('Meta Description') }}</label>
+								<div class="col-md-10">
+									<textarea name="product_description[{{ lang.id }}][meta_description]" class="form-control">{% if all_descriptions %}{{ all_descriptions[lang.id]['meta_description'] }}{% endif %}</textarea>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">{{ _('Meta keyword') }}</label>
+								<div class="col-md-10">
+									<textarea name="product_description[{{ lang.id }}][meta_keyword]" class="form-control">{% if all_descriptions %}{{ all_descriptions[lang.id]['meta_keyword'] }}{% endif %}</textarea>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">
+									{{ _('Tags') }}
+									<small data-toggle="tooltip" data-original-title="英文逗号分割">
+										<i class="fa fa-question-circle"></i>
+									</small>
+								</label>
+								<div class="col-md-10">
+									<input class="form-control" name="product_description[{{ lang.id }}][tag]" value="{% if all_descriptions %}{{ all_descriptions[lang.id]['tag'] }}{% endif %}" type="text">
+								</div>
+							</div>
+						</div>
+						{% endfor %}
+					</div>
+				</div>
+
+				<div id="tab-data" class="tab-pane">
+					<div class="form-group">
+						<label class="col-md-2 control-label">{{ _('Image') }}</label>
+						<div class="col-md-10">
+							{% if mode == 'create' %}
+							<a href="javascript:void(0);" id="cover_thumb_image" data-target="cover" data-toggle="image" class="img-thumbnail" data-original-title="" aria-describedby="">
+								<img src="{{ url_for('static', filename='images/no_image-100x100.png') }}" width="100px" data-placeholder="{{ url_for('static', filename='images/no_image-100x100.png') }}">
+							</a>
+							{% else %}
+							<a href="javascript:void(0);" id="cover_thumb_image" data-target="cover" data-toggle="image" class="img-thumbnail" data-original-title="" aria-describedby="">
+								<img src="{{ category.cover.view_url|default(url_for('static', filename='images/no_image-100x100.png')) }}" width="100px" data-placeholder="{{ url_for('static', filename='images/no_image-100x100.png') }}">
+							</a>
+							{% endif %}
+							<input id="cover_id" name="cover" value="{{ product.cover_id|default(0) }}" type="hidden">
+						</div>
+					</div>
+					<div class="form-group required">
+						<label class="col-md-2 control-label">
+							{{ _('Model') }}
+						</label>
+						<div class="col-md-10">
+							<input class="form-control" name="model" value="{{ product.model }}" type="text">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">
+							{{ _('SKU') }}
+							<small data-toggle="tooltip" data-original-title="Stock Keeping Unit">
+								<i class="fa fa-question-circle"></i>
+							</small>
+						</label>
+						<div class="col-md-10">
+							<input class="form-control" name="sku" value="{{ product.sku }}" type="text">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">
+							{{ _('UPC') }}
+							<small data-toggle="tooltip" data-original-title="Universal Product Code">
+								<i class="fa fa-question-circle"></i>
+							</small>
+						</label>
+						<div class="col-md-10">
+							<input class="form-control" name="upc" value="{{ product.upc }}" type="text">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">
+							{{ _('EAN') }}
+							<small data-toggle="tooltip" data-original-title="European Article Number">
+								<i class="fa fa-question-circle"></i>
+							</small>
+						</label>
+						<div class="col-md-10">
+							<input class="form-control" name="ean" value="{{ product.ean }}" type="text">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">
+							{{ _('JAN') }}
+							<small data-toggle="tooltip" data-original-title="Japanese Article Number">
+								<i class="fa fa-question-circle"></i>
+							</small>
+						</label>
+						<div class="col-md-10">
+							<input class="form-control" name="jan" value="{{ product.jan }}" type="text">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">
+							{{ _('ISBN') }}
+							<small data-toggle="tooltip" data-original-title="International Standard Book Number">
+								<i class="fa fa-question-circle"></i>
+							</small>
+						</label>
+						<div class="col-md-10">
+							<input class="form-control" name="isbn" value="{{ product.isbn }}" type="text">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">
+							{{ _('MPN') }}
+							<small data-toggle="tooltip" data-original-title="Manufacturer Part Number">
+								<i class="fa fa-question-circle"></i>
+							</small>
+						</label>
+						<div class="col-md-10">
+							<input class="form-control" name="mpn" value="{{ product.mpn }}" type="text">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">{{ _('Location') }}</label>
+						<div class="col-md-10">
+							<input class="form-control" name="location" value="{{ product.location }}" type="text">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">{{ _('Price') }}</label>
+						<div class="col-md-10">
+							<input class="form-control" name="price" value="{{ product.price }}" type="text">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">{{ _('Tax Class') }}</label>
+						<div class="col-md-10">
+							<input class="form-control" name="tax_class_id" value="{{ product.tax_class_id }}" type="text">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">{{ _('Quantity') }}</label>
+						<div class="col-md-10">
+							<input class="form-control" name="quantity" value="{{ product.quantity }}" type="text">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-md-2 control-label">
+							{{ _('Minimum Quantity') }}
+							<small data-toggle="tooltip" data-original-title="Force a minimum ordered amount">
+								<i class="fa fa-question-circle"></i>
+							</small>
+						</label>
+						<div class="col-md-10">
+							<input class="form-control" name="mini_cnt" value="{{ product.mini_cnt }}" type="text">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">{{ _('Subtract Stock') }}</label>
+						<div class="col-md-10">
+							<input class="form-control" name="subtract" value="{{ product.subtract }}" type="text">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">
+							{{ _('Out Of Stock Status') }}
+							<small data-toggle="tooltip" data-original-title="Stock Keeping Unit">
+								<i class="fa fa-question-circle"></i>
+							</small>
+						</label>
+						<div class="col-md-10">
+							<input class="form-control" name="stock_status_id" value="{{ product.stock_status_id }}" type="text">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">{{ _('Requires Shipping') }}</label>
+						<div class="col-md-10">
+							<div class="radio radio-inline">
+								<input id="shipping_yes" value="1" name="shipping" checked="" type="radio">
+								<label for="shipping_yes"> Yes </label>
+							</div>
+							<div class="radio radio-inline">
+								<input id="shipping_no" value="0" name="shipping" checked="" type="radio">
+								<label for="shipping_no"> No </label>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">{{ _('Date Available') }}</label>
+						<div class="col-md-4">
+							<div class="input-group">
+								<input class="form-control date" placeholder="mm/dd/yyyy" id="datepicker-autoclose" type="text">
+								<span class="input-group-addon bg-primary b-0">
+													<i class="fa fa-calendar"></i>
+												</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">{{ _('Dimensions (L x W x H)') }}</label>
+						<div class="col-md-10">
+							<div class="row">
+								<div class="col-sm-4">
+									<input name="length" value="" placeholder="Length" id="input-length" class="form-control" type="text">
+								</div>
+								<div class="col-sm-4">
+									<input name="width" value="" placeholder="Width" id="input-width" class="form-control" type="text">
+								</div>
+								<div class="col-sm-4">
+									<input name="height" value="" placeholder="Height" id="input-height" class="form-control" type="text">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">{{ _('Length Class') }}</label>
+						<div class="col-md-10">
+
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">{{ _('Weight') }}</label>
+						<div class="col-md-10">
+							<input class="form-control" name="weight" value="{{ product.weight }}" type="text">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">{{ _('Weight Class') }}</label>
+						<div class="col-md-10">
+
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">{{ _('Status') }}</label>
+						<div class="col-md-10">
+
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-md-2 control-label">{{ _('Sort Order') }}</label>
+						<div class="col-md-10">
+							<input class="form-control" name="sort_order" value="{{ product.sort_order }}" type="text">
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+		</form>
+	</div>
+</div>
+{% endblock %}

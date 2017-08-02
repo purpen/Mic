@@ -1,10 +1,85 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends pjax("layout/admin.html") %}
+
+{% block page_content %}
+<div class="list-page">
+	<div class="page-header">
+		<span>{{ _('Brand List') }}</span>
+
+		<div class="pull-right m-t-10">
+			{% include "block/_select_items.html" %}
+			<a href="{{ url_for('admin.create_brand') }}" class="btn btn-icon btn-primary pjax" data-toggle="tooltip" data-original-title="{{ _('Add New') }}">
+				<i class="fa fa-plus"></i>
+			</a>
+			<button type="button" data-form-id="form-brands" class="btn btn-icon btn-danger delete-all" data-toggle="tooltip" data-original-title="{{ _('Delete') }}">
+				<i class="fa fa-trash-o"></i>
+			</button>
+		</div>
+	</div>
+
+	<div class="card-box table-responsive">
+		<form id="form-brands" action="{{ url_for('admin.delete_brand') }}" method="post">
+			<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" >
+
+			<table class="table table-bordered table-hover" role="grid">
+				<thead>
+					<tr role="row">
+						<th class="text-center">
+							<input name="check_all" type="checkbox" class="check-all">
+						</th>
+						<th class="text-center">{{ _('Logo') }}</th>
+						<th>{{ _('Brand Name') }}</th>
+						<th>{{ _('Brand Features') }}</th>
+						<th class="text-center">{{ _('Is Recommend?') }}</th>
+						<th class="text-right">{{ _('Status') }}</th>
+						<th class="text-right">{{ _('Action') }}</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					{% for brand in paginated_brands.items %}
+					<tr role="row">
+						<td class="text-center">
+							<input name="selected[]" class="check-one" value="{{ brand.id }}" type="checkbox">
+						</td>
+						<td class="text-center">
+							<img src="{{ brand.logo.view_url }}" width="60px">
+						</td>
+						<td>{{ brand.name }}</td>
+						<td>{{ brand.features }}</td>
+						<td class="text-center">{{ brand.is_recommended }}</td>
+						<td class="text-right">
+							<strong class="indicator {{ brand.status_label[2] }}">{{ brand.status_label[1] }}</strong>
+						</td>
+						<td class="actions text-right">
+							<a href="{{ url_for('admin.edit_brand', id=brand.id) }}" class="btn btn-link pjax" data-toggle="tooltip" data-original-title="{{ _('Edit') }}">
+								{{ _('Edit') }}
+							</a>
+						</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</form>
+
+		{% import "block/_macros.html" as macros %}
+		<div class="pagesbar">
+			<div class="pages-entries">
+				Showing {{ paginated_brands.offset_start }} to {{ paginated_brands.offset_end }} of {{ paginated_brands.total }} entries (total {{ paginated_brands.pages }} pages)
+			</div>
+			<div class="pull-right">
+				{{ macros.pagination_widget(paginated_brands, '.show_brands') }}
+			</div>
+		</div>
+
+	</div>
+
+</div>
+
+{% if is_pjax %}
+	<script type="text/javascript">
+		mic.hook_check_all();
+		mic.hook_delete_all();
+	</script>
+{% endif %}
+
+{% endblock %}

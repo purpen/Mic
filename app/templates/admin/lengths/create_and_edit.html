@@ -1,0 +1,74 @@
+{% extends "layout/admin.html" %}
+
+{% block page_content %}
+<div class="form-page">
+	<div class="page-header">
+		<span>
+			{% if mode == 'create' %}
+				{{ _('Add Length Class') }}
+			{% else %}
+				{{ _('Edit Length Class') }}
+			{% endif %}
+		</span>
+
+		<div class="pull-right m-t-10">
+			<button type="submit" form="form-length" class="btn btn-icon btn-primary" data-toggle="tooltip" data-original-title="{{ _('Save') }}">
+				<i class="fa fa-save"></i>
+			</button>
+			<a href="{{ url_for('admin.show_lengths') }}" class="btn btn-icon btn-default" data-toggle="tooltip" data-original-title="{{ _('Cancel') }}">
+				<i class="fa fa-reply"></i>
+			</a>
+		</div>
+	</div>
+
+
+	<div class="card-box">
+		<form class="form-horizontal" role="form" method="post" id="form-length" action="">
+			<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" >
+
+			<div class="form-group required">
+				<label class="col-md-2 control-label">
+					{{ _('Length Title') }}
+				</label>
+				<div class="col-md-8">
+					{% for lang in languages %}
+					<div class="input-group {% if not lang.last %} m-b-5{% endif %}">
+						<span class="input-group-addon">
+							<img src="{{ lang.icon.view_url }}" title="{{ lang.title }}">
+						</span>
+						<input name="length_class_description[{{ lang.id }}][title]" class="form-control" type="text" value="{% if language_descriptions %}{{ language_descriptions[lang.id].title }}{% endif %}" >
+					</div>
+					{% endfor %}
+				</div>
+			</div>
+
+			<div class="form-group required">
+				<label class="col-md-2 control-label">
+					{{ _('Length Unit') }}
+				</label>
+				<div class="col-md-8">
+					{% for lang in languages %}
+					<div class="input-group {% if not lang.last %} m-b-5{% endif %}">
+						<span class="input-group-addon">
+							<img src="{{ lang.icon.view_url }}" title="{{ lang.title }}">
+						</span>
+						<input name="length_class_description[{{ lang.id }}][unit]" class="form-control" type="text" value="{% if language_descriptions %}{{ language_descriptions[lang.id].unit }}{% endif %}">
+					</div>
+					{% endfor %}
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-md-2 control-label">
+					{{ _('Value') }}
+				</label>
+				<div class="col-md-8">
+					<input class="form-control" id="value" name="value" value="{{ length_class.value }}" type="text">
+				</div>
+			</div>
+
+		</form>
+	</div>
+
+</div>
+{% endblock %}

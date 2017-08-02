@@ -1,10 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "layout/admin.html" %}
+
+{% block page_content %}
+<div class="container">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="pull-right m-t-5 m-b-20">
+				<button type="submit" form="form-upload" class="btn btn-icon btn-primary waves-effect waves-light" data-toggle="tooltip" data-original-title="{{ _('Save') }}">
+					<i class="fa fa-save"></i>
+				</button>
+				<a href="{{ url_for('admin.show_uploads') }}" class="btn btn-icon btn-default waves-effect waves-light" data-toggle="tooltip" data-original-title="{{ _('Cancel') }}">
+					<i class="fa fa-reply"></i>
+				</a>
+			</div>
+			<h3 class="page-title">{{ _('Uploads') }}</h3>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-12">
+			<!--Main Content-->
+			<div class="card-box table-responsive">
+				<h4 class="header-title m-t-0 m-b-30">
+					<i class="fa fa-pencil"></i>
+					{% if mode == 'create' %}
+						{{ _('Add upload info') }}
+					{% else %}
+						{{ _('Edit upload info') }}
+					{% endif %}
+				</h4>
+
+				<div class="row">
+					<div class="col-lg-10">
+						<form class="form-horizontal" role="form" method="post" id="form-upload" action="" enctype="multipart/form-data">
+							{{ form.hidden_tag() }}
+
+							<div id="dropzone-uploader" class="dropzone">
+
+							</div>
+
+						</form>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
