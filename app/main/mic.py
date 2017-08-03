@@ -3,9 +3,9 @@ from flask import g, session, current_app, request, redirect, url_for
 from flask_sqlalchemy import get_debug_queries
 from flask_login import current_user
 from app import babel
-from config import LANGUAGES
 from app.main import main
 from ..constant import SUPPORT_LANGUAGES
+from app.models import Language
 
 @main.route('/<string:lang>')
 def choose_locale(lang):
@@ -87,7 +87,9 @@ def include_init_data():
     """注入共用的变量"""
     pjax = True if 'X-PJAX' in request.headers else False
 
+    # 获取站点支持的所有语言
+    support_languages = Language.query.filter_by(status=1).all()
     return {
         'is_pjax': pjax,
-        'support_languages': SUPPORT_LANGUAGES
+        'support_languages': support_languages
     }

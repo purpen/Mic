@@ -6170,6 +6170,7 @@
       var footer = '<button href="#" class="btn btn-primary note-video-btn disabled" disabled>' + lang.video.insert + '</button>';
 
       this.$dialog = ui.dialog({
+        className: 'video-dialog',
         title: lang.video.insert,
         fade: options.dialogsFade,
         body: body,

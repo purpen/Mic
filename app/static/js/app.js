@@ -174,16 +174,91 @@ mic.hook_pjax_link = function () {
 	});
 };
 
-$(function () {
-
+mic.hook_tooltip_toggle = function () {
 	$('[data-toggle="tooltip"]').tooltip({
 		container: 'body',
+		trigger: 'hover',
 		html: true
 	});
+};
 
+mic.hook_select2 = function () {
 	$('.select2').select2({
 		'width': '100%'
 	});
+};
+
+mic.hook_summer_editor = function () {
+	// Override summernotes image manager
+	$('.summernote').each(function() {
+		var element = this;
+
+		$(element).summernote({
+			disableDragAndDrop: true,
+			height: 300,
+			emptyPara: '',
+			toolbar: [
+				['font', ['bold', 'underline', 'clear']],
+				['para', ['ul', 'ol', 'paragraph']],
+				['table', ['table']],
+				['insert', ['link', 'image', 'video']],
+				['view', ['fullscreen', 'codeview', 'help']],
+				['history', ['undo', 'redo']]
+			],
+			buttons: {
+    			image: function() {
+					var ui = $.summernote.ui;
+
+					// create button
+					var button = ui.button({
+						contents: '<i class="note-icon-picture" />',
+						tooltip: $.summernote.lang[$.summernote.options.lang].image.image,
+						click: function () {
+							$('#modal-image').remove();
+
+							if ($.cookie('img_last_open_folder') && ($.cookie('img_last_open_folder') != 'undefined')) {
+								img_last_open_folder = $.cookie('img_last_open_folder');
+							}
+
+							$.ajax({
+								url: '/admin/file_manager/show_asset?directory=' + img_last_open_folder,
+								dataType: 'html',
+								beforeSend: function() {
+									$('#button-image i').replaceWith('<i class="fa fa-circle-o-notch fa-spin"></i>');
+									$('#button-image').prop('disabled', true);
+								},
+								complete: function() {
+									$('#button-image i').replaceWith('<i class="fa fa-upload"></i>');
+									$('#button-image').prop('disabled', false);
+								},
+								success: function(html) {
+									$('body').append('<div id="modal-image" class="modal">' + html + '</div>');
+
+									$('#modal-image').modal('show');
+
+									$('#modal-image').delegate('a.thumbnail', 'click', function(e) {
+										e.preventDefault();
+
+										$(element).summernote('insertImage', $(this).attr('href'));
+
+										$('#modal-image').modal('hide');
+									});
+								}
+							});
+						}
+					});
+
+					return button.render();
+				}
+  			}
+		});
+	});
+};
+
+$(function () {
+	mic.hook_tooltip_toggle();
+
+	mic.hook_select2();
 
 	$('.date').datetimepicker({
 		pickTime: false

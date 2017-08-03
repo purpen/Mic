@@ -1,4 +1,4 @@
-{% extends "layout/admin.html" %}
+{% extends pjax("layout/admin.html") %}
 
 {% block page_content %}
 <div class="list-page">
@@ -29,86 +29,85 @@
 
 	<div class="card-box m-t-20">
 		<div class="row">
-			<div class="col-md-8">
+			<div class="col-md-9">
 
 				<form class="form-horizontal" role="form" method="post" id="form-store" action="">
 					<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
 					<div class="form-group">
-						{{ form.name.label(class="col-md-2 control-label") }}
-						<div class="col-md-10">
+						{{ form.name.label(class="col-md-3 control-label") }}
+						<div class="col-md-9">
 							{{ form.name(class="form-control") }}
 						</div>
 					</div>
 
 					<div class="form-group">
-						{{ form.domain.label(class="col-md-2 control-label") }}
-						<div class="col-md-10">
+						{{ form.domain.label(class="col-md-3 control-label") }}
+						<div class="col-md-9">
 
 						</div>
 					</div>
 
 					<div class="form-group">
-						{{ form.description.label(class="col-md-2 control-label") }}
-						<div class="col-md-10">
+						{{ form.description.label(class="col-md-3 control-label") }}
+						<div class="col-md-9">
 							{{ form.description(class="form-control", rows="3") }}
 						</div>
 					</div>
 
 					<div class="form-group">
-						{{ form.status.label(class="col-md-2 control-label") }}
-						<div class="col-md-10">
+						{{ form.status.label(class="col-md-3 control-label") }}
+						<div class="col-md-9">
 							{{ form.status(class="form-control select2") }}
 						</div>
 					</div>
 
 					<div class="form-group">
-						{{ form.copyright.label(class="col-md-2 control-label") }}
-						<div class="col-md-10">
+						{{ form.copyright.label(class="col-md-3 control-label") }}
+						<div class="col-md-9">
 							{{ form.copyright(class="form-control") }}
 						</div>
 					</div>
 
 					<div class="form-group">
-						<label class="col-md-2 control-label">
+						<label class="col-md-3 control-label">
 							{{ _('Favicon') }}
 						</label>
-						<div class="col-md-10">
+						<div class="col-md-9">
 
 						</div>
 					</div>
 
 					<div class="form-group">
-						<label class="col-md-2 control-label">
-							{{ _('Site Languages') }}
+						<label class="col-md-3 control-label">
+							{{ _('Selected Language') }}
 						</label>
-						<div class="col-md-10">
-							<div class="checkbox">
+						<div class="col-md-9">
+							<div class="languages-checkbox">
 								{% for lang in languages %}
 								<label class="checkbox-inline">
-									<input type="checkbox" name="languages[]" value="{{ lang.id }}"> {{ lang.name }}
+									<input type="checkbox" name="languages[]" value="{{ lang.id }}" {% if lang.id in select_languages %}checked="checked"{% endif %}> {{ lang.name }}
+									{% if lang.code == g.locale %}<span class="badge badge-danger">{{ _('Default Language') }}</span>{% endif %}
 								</label>
 								{% endfor %}
 							</div>
-
 						</div>
 					</div>
 
 					<div class="form-group">
-						<label class="col-md-2 control-label">
+						<label class="col-md-3 control-label">
 							{{ _('Site Currency') }}
 						</label>
-						<div class="col-md-10">
-							<div class="checkbox">
+						<div class="col-md-9">
+							<div class="languages-checkbox">
 								{% for cury in currencies %}
 								<label class="checkbox-inline">
-									<input type="checkbox" name="currencies[]" value="{{ cury.id }}"> {{ cury.title }}
+									<input type="checkbox" name="currencies[]" value="{{ cury.id }}" {% if cury.id in select_currencies %}checked="checked"{% endif %}> {{ cury.title }}
 								</label>
 								{% endfor %}
 							</div>
 						</div>
 					</div>
-
 
 				</form>
 

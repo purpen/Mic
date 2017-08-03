@@ -5,7 +5,7 @@ from flask_login import current_user
 
 admin = Blueprint('admin', __name__)
 
-from . import dashboard, account, posts, products, brands, categories, settings, file_manager, uploads
+from . import dashboard, account, posts, products, brands, categories, settings, file_manager, uploads, system
 
 
 # 针对程序全局请求的钩子，

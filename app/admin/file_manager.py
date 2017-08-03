@@ -99,6 +99,17 @@ def show_asset(page=1):
                            all_directory=all_directory,
                            paginated_assets=paginated_assets)
 
+@admin.route('/file_manager/get_asset/<int:id>')
+def get_asset(id):
+    asset = Asset.query.get_or_404(id)
+    return jsonify(asset.to_json())
+
+
+@admin.route('/file_manager/view_asset/<int:id>')
+def view_asset(id):
+    asset = Asset.query.get_or_404(id)
+    return jsonify(asset.to_json())
+
 
 @admin.route('/file_manager/flupload', methods=['POST'])
 def flupload():
@@ -129,7 +140,17 @@ def flupload():
 
         size = os.path.getsize(storage_filepath) / 1024  # k
 
-        new_asset = Asset(filepath=filename, filename=upload_name, directory_id=directory_id, width=im.width, height=im.height, size=size)
+        new_asset = Asset(
+            master_uid=Master.master_uid(),
+            site_id=Site.master_site_id(current_user),
+            user_id=current_user.id,
+            filepath=filename,
+            filename=upload_name,
+            directory_id=directory_id,
+            width=im.width,
+            height=im.height,
+            size=size
+        )
         db.session.add(new_asset)
         db.session.commit()
 

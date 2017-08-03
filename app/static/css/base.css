@@ -238,3 +238,25 @@
 .text-muted {
 	color: #8D99A6 !important;
 }
+.alert-default {
+    color: #777;
+    background-color: #fafafa;
+    border-color: #d9d9d9;
+}
+.badge-default {
+    background-color: #F0F4F7;
+}
+.badge-success {
+    background-color: #98d85b;
+}
+.badge-danger {
+    background-color: #ff5858;
+}
+
+.note-btn-group.btn-group > .dropdown-toggle {
+    padding: 3px 8px;
+}
+.link-dialog .modal-body,
+.video-dialog .modal-body {
+    padding: 30px;
+}

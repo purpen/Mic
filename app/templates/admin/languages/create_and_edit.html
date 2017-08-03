@@ -1,4 +1,4 @@
-{% extends "layout/admin.html" %}
+{% extends pjax("layout/admin.html") %}
 
 {% block page_content %}
 <div class="form-page">
@@ -11,10 +11,10 @@
 			{% endif %}
 		</span>
 		<div class="pull-right m-t-10">
-			<button type="submit" form="form-language" class="btn btn-icon btn-primary waves-effect waves-light" data-toggle="tooltip" data-original-title="{{ _('Save') }}">
+			<button type="submit" form="form-language" class="btn btn-icon btn-primary" data-toggle="tooltip" data-original-title="{{ _('Save') }}">
 				<i class="fa fa-save"></i>
 			</button>
-			<a href="{{ url_for('admin.show_languages') }}" class="btn btn-icon btn-default waves-effect waves-light" data-toggle="tooltip" data-original-title="{{ _('Cancel') }}">
+			<a href="{{ url_for('admin.show_languages') }}" class="btn btn-icon btn-default pjax" data-toggle="tooltip" data-original-title="{{ _('Cancel') }}">
 				<i class="fa fa-reply"></i>
 			</a>
 		</div>
@@ -25,9 +25,9 @@
 			{{ form.hidden_tag() }}
 
 			<div class="form-group required {% if form.errors.name %} has-error{% endif %}">
-				<label class="col-md-2 control-label">{{ form.name.label }}</label>
+				{{ form.name.label(class="col-md-2 control-label") }}
 				<div class="col-md-5">
-					{{ form.name(maxlength=64, class='form-control', value=language.name) }}
+					{{ form.name(maxlength=64, class='form-control') }}
 					{% for error in form.errors.name %}
 					<span class="help-block">{{ error }}</span><br>
 					{% endfor %}
@@ -35,11 +35,9 @@
 			</div>
 
 			<div class="form-group required {% if form.errors.code %} has-error{% endif %}">
-				<label class="col-md-2 control-label">
-					{{ form.code.label }}
-				</label>
+				{{ form.code.label(class="col-md-2 control-label") }}
 				<div class="col-md-5">
-					{{ form.code(class='form-control', value=language.code) }}
+					{{ form.code(class='form-control') }}
 					{% for error in form.errors.code %}
 					<span class="help-block">{{ error }}</span><br>
 					{% endfor %}
@@ -47,51 +45,64 @@
 			</div>
 
 			<div class="form-group">
-				<label class="col-md-2 control-label">
-					{{ form.locale.label }} <small data-toggle="tooltip" data-original-title="eg: en_US.UTF-8,en_US,en-gb,en_gb,english"><i class="fa fa-question-circle"></i></small>
-				</label>
+				<div class="col-md-2 text-right">
+					{{ form.locale.label(class="control-label") }}
+					<small data-toggle="tooltip" data-original-title="eg: en_US.UTF-8,en_US,en-gb,en_gb,english">
+						<i class="fa fa-question-circle"></i>
+					</small>
+				</div>
 				<div class="col-md-5">
-					{{ form.locale(class='form-control', value=language.locale) }}
+					{{ form.locale(class='form-control') }}
 				</div>
 			</div>
 
-
 			<div class="form-group">
-				<label class="col-md-2 control-label">{{ form.icon.label }}</label>
+				{{ form.icon.label(class="col-md-2 control-label") }}
 				<div class="col-md-5">
 					{% if mode == 'create' %}
-					<a href="javascript:void(0);" id="icon_thumb_image" data-target="icon" data-toggle="image" class="img-thumbnail" data-original-title="" aria-describedby="">
+					<a href="javascript:void(0);" id="icon_thumb_image" data-target="icon" data-toggle="image" class="img-thumbnail">
 						<img src="{{ url_for('static', filename='images/no_image-100x100.png') }}" width="100px" data-placeholder="{{ url_for('static', filename='images/no_image-100x100.png') }}">
 					</a>
 					{% else %}
-					<a href="javascript:void(0);" id="icon_thumb_image" data-target="icon" data-toggle="image" class="img-thumbnail" data-original-title="" aria-describedby="">
+					<a href="javascript:void(0);" id="icon_thumb_image" data-target="icon" data-toggle="image" class="img-thumbnail">
 						<img src="{{ language.icon.view_url|default(url_for('static', filename='images/no_image-100x100.png')) }}" width="100px" data-placeholder="{{ url_for('static', filename='images/no_image-100x100.png') }}">
 					</a>
 					{% endif %}
-					<input id="icon_id" name="icon" value="{{ language.icon_id|default(0) }}" type="hidden">
+					{{ form.icon(id="icon_id", class="form-control", type="hidden") }}
 				</div>
 			</div>
 
 			<div class="form-group">
-				<label class="col-md-2 control-label">{{ form.sort_order.label }}</label>
+				{{ form.sort_order.label(class="col-md-2 control-label") }}
 				<div class="col-md-5">
-					{{ form.sort_order(class='form-control', value=language.sort_order|default(1)) }}
+					{{ form.sort_order(class='form-control') }}
+					<span class="help-block">
+						{{ _('The smaller the value, the better the sorting.') }}
+					</span>
 				</div>
 			</div>
 
 			<div class="form-group">
-				<label class="col-md-2 control-label">
-					{{ form.status.label }} <small data-toggle="tooltip" data-original-title="在语言下拉项中隐藏/显示"><i class="fa fa-question-circle"></i></small>
-				</label>
+				<div class="col-md-2 text-right">
+					{{ form.status.label(class="control-label") }}
+					<small data-toggle="tooltip" data-original-title="在语言下拉项中隐藏/显示">
+						<i class="fa fa-question-circle"></i>
+					</small>
+				</div>
 				<div class="col-md-5">
-					<select name="status" class="form-control select2">
-						<option value="0">{{ _('Select Status') }}</option>
-						<option value="1" {% if language.status == 1 %}selected="selected"{% endif %}>Enabled</option>
-						<option value="-1" {% if language.status == -1 %}selected="selected"{% endif %}>Disabled</option>
-					</select>
+					{{ form.status(class='form-control select2') }}
 				</div>
 			</div>
 		</form>
 	</div>
 </div>
+
+{% if is_pjax %}
+	<script type="text/javascript">
+		mic.hook_tooltip_toggle();
+
+		mic.hook_select2();
+	</script>
+{% endif %}
+
 {% endblock %}

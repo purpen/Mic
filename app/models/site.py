@@ -9,6 +9,20 @@ __all__ = [
     'SiteSeo'
 ]
 
+# site and language => N to N
+site_language_table = db.Table(
+    'fp_site_language',
+    db.Column('site_id', db.Integer, db.ForeignKey('fp_site.id')),
+    db.Column('language_id', db.Integer, db.ForeignKey('fp_language.id'))
+)
+
+# site and currency => N to N
+site_currency_table = db.Table(
+    'fp_site_currency',
+    db.Column('site_id', db.Integer, db.ForeignKey('fp_site.id')),
+    db.Column('currency_id', db.Integer, db.ForeignKey('fp_currency.id'))
+)
+
 class Site(db.Model):
     """官网信息"""
 
@@ -27,9 +41,11 @@ class Site(db.Model):
     # 套餐标准，1、免费版 2、vip版本 3、定制版
     pricing = db.Column(db.SmallInteger, default=1)
 
+    # 默认值，语言、国家、币种
     locale = db.Column(db.String(4), default='zh')
     country = db.Column(db.String(30), nullable=True)
     currency = db.Column(db.String(10), default='CNY')
+
     # 行业范围
     domain = db.Column(db.SmallInteger, default=1)
     copyright = db.Column(db.String(100), nullable=True)
@@ -44,10 +60,48 @@ class Site(db.Model):
     created_at = db.Column(db.Integer, default=timestamp)
     update_at = db.Column(db.Integer, default=timestamp, onupdate=timestamp)
 
+    # site => language, N => N
+    languages = db.relationship(
+        'Language', secondary=site_language_table, backref='sites'
+    )
+
+    # site => currency, N => N
+    currencies = db.relationship(
+        'Currency', secondary=site_currency_table, backref='sites'
+    )
+
     # site => brand, 1 => N
     brands = db.relationship(
         'Brand', backref='site', lazy='dynamic'
     )
+
+    # site => category, 1 => N
+    categories = db.relationship(
+        'Category', backref='site', lazy='dynamic'
+    )
+
+    # site => product, 1 => N
+    products = db.relationship(
+        'Product', backref='site', lazy='dynamic'
+    )
+
+    def add_languages(self, *languages):
+        """追加语言选项"""
+        self.languages.extend([lang for lang in languages if lang not in self.languages])
+
+    def update_languages(self, *languages):
+        """更新语言选项"""
+        self.languages = [lang for lang in languages]
+
+    def remove_languages(self, *languages):
+        """删除语言选项"""
+        self.languages = [lang for lang in self.languages if lang not in languages]
+
+
+    def update_currencies(self, *currencies):
+        """更新货币单位"""
+        self.currencies = [currency for currency in currencies]
+
 
     @staticmethod
     def master_site_id(user):

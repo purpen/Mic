@@ -46,7 +46,13 @@
 						</td>
 						<td>{{ brand.name }}</td>
 						<td>{{ brand.features }}</td>
-						<td class="text-center">{{ brand.is_recommended }}</td>
+						<td class="text-center">
+							{% if brand.is_recommended %}
+							<strong class="label label-success">{{ _('Yes') }}</strong>
+							{% else %}
+							<strong class="label label-default">{{ _('No') }}</strong>
+							{% endif %}
+						</td>
 						<td class="text-right">
 							<strong class="indicator {{ brand.status_label[2] }}">{{ brand.status_label[1] }}</strong>
 						</td>

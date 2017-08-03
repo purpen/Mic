@@ -18,6 +18,7 @@ def before_request():
 
             return redirect(url_for('admin.store'))
 
+
 @admin.context_processor
 def include_common_data():
     """注入共用的变量"""
@@ -25,7 +26,8 @@ def include_common_data():
     current_site = Site.query.filter_by(master_uid=Master.master_uid()).first()
 
     return {
-        'current_site': current_site
+        'current_site': current_site,
+        'site_languages': current_site.languages
     }
 
 
@@ -33,6 +35,7 @@ def include_common_data():
 @login_required
 def index():
     return render_template('admin/index.html')
+
 
 @admin.route('/help')
 def help():

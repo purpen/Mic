@@ -9,7 +9,7 @@
 		</span>
 		<div class="pull-right m-t-10">
 			{% include 'block/_select_items.html' %}
-			<a href="{{ url_for('admin.create_currency') }}" class="btn btn-icon btn-primary" data-toggle="tooltip" data-original-title="{{ _('Add New') }}">
+			<a href="{{ url_for('admin.create_currency') }}" class="btn btn-icon btn-primary pjax" data-toggle="tooltip" data-original-title="{{ _('Add New') }}">
 				<i class="fa fa-plus"></i>
 			</a>
 			<button type="button" data-form-id="form-currencies" class="btn btn-icon btn-danger delete-all hidden" data-toggle="tooltip" data-original-title="{{ _('Delete') }}">
@@ -72,6 +72,14 @@
 		</div>
 
 	</div>
-
 </div>
+
+{% if is_pjax %}
+	<script type="text/javascript">
+		mic.hook_tooltip_toggle();
+		mic.hook_check_all();
+		mic.hook_delete_all();
+	</script>
+{% endif %}
+
 {% endblock %}

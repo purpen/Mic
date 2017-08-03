@@ -26,6 +26,8 @@ class Category(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     master_uid = db.Column(db.Integer, index=True, default=0)
+    # 所属的官网
+    site_id = db.Column(db.Integer, db.ForeignKey('fp_site.id'))
 
     parent_id = db.Column(db.Integer, default=0)
     top = db.Column(db.Boolean, default=True)
@@ -60,16 +62,16 @@ class Category(db.Model):
 
 
     @classmethod
-    def always_category(cls, path=0, page=1, per_page=20):
+    def always_category(cls, site_id, language_id=1, path=0, page=1, per_page=20):
         """get category tree"""
         sql = "select cp.category_id, GROUP_CONCAT(cd1.name ORDER BY cp.level SEPARATOR '&nbsp;&nbsp;&gt;&nbsp;&nbsp;') AS name, c1.id, c1.status, c1.icon_id, c1.sort_order from fp_category_path cp " \
               "LEFT JOIN fp_category c1 ON (cp.category_id=c1.id) " \
               "LEFT JOIN fp_category c2 ON (cp.path_id=c2.id)" \
               "LEFT JOIN fp_category_description AS cd1 ON (cp.path_id = cd1.category_id) " \
-              "LEFT JOIN fp_category_description AS cd2 ON (cp.category_id=cd2.category_id) WHERE cd1.language_id=1 AND cd2.language_id=1"
+              "LEFT JOIN fp_category_description AS cd2 ON (cp.category_id=cd2.category_id) WHERE c1.site_id=%d AND cd1.language_id=%d AND cd2.language_id=%d" % (site_id, language_id, language_id)
 
         sql += ' GROUP BY cp.category_id'
-        sql += ' ORDER BY c1.sort_order DESC'
+        sql += ' ORDER BY cp.category_id ASC, c1.sort_order ASC'
 
         if page == 1:
             offset = 0
@@ -181,6 +183,8 @@ class Banner(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     master_uid = db.Column(db.Integer, index=True, default=0)
+    # 所属的官网
+    site_id = db.Column(db.Integer, db.ForeignKey('fp_site.id'))
 
     name = db.Column(db.String(64), nullable=False)
     status = db.Column(db.SmallInteger, default=0)
@@ -211,6 +215,8 @@ class Tag(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     master_uid = db.Column(db.Integer, index=True, default=0)
+    # 所属的官网
+    site_id = db.Column(db.Integer, db.ForeignKey('fp_site.id'))
 
     name = db.Column(db.String(20), unique=True, index=True)
     sim_name = db.Column(db.String(100))

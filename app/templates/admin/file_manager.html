@@ -110,11 +110,15 @@
 	$('#button-parent').on('click', function(e) {
 		e.preventDefault();
 
+		$('[data-toggle="tooltip"]').tooltip('hide');
+
 		$('#modal-image').load($(this).attr('href'));
 	});
 
 	$('#button-refresh').on('click', function(e) {
 		e.preventDefault();
+
+		$('[data-toggle="tooltip"]').tooltip('hide');
 
 		$('#modal-image').load($(this).attr('href'));
 	});

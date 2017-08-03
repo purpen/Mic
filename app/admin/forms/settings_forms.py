@@ -23,13 +23,16 @@ class SiteForm(Form):
 class LanguageForm(Form):
     name = StringField(lazy_gettext('Language Name'), validators=[DataRequired(message=lazy_gettext('Language name cant empty!')),
                                                              Length(1, 32)])
-    code = StringField(lazy_gettext('Code'), validators=[DataRequired(message=lazy_gettext('Language code cant empty!'))])
+    code = StringField(lazy_gettext('Code'), validators=[DataRequired(message=lazy_gettext('Language code cant empty!')),
+                                                         Length(2, 5)])
 
     locale = StringField(lazy_gettext('Locale'))
     icon = IntegerField(lazy_gettext('Icon'), default=0)
     directory = StringField(lazy_gettext('Directory'))
     sort_order = IntegerField(lazy_gettext('Sort Order'), default=1)
-    status = IntegerField(lazy_gettext('Status'))
+    status = SelectField(lazy_gettext('Site Status'), choices=[
+        (1, lazy_gettext('Enabled')), (-1, lazy_gettext('Disabled'))
+    ], coerce=int)
 
 
     def validate_code(self, field):

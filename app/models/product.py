@@ -19,6 +19,8 @@ class Product(db.Model):
     __tablename__ = 'fp_product'
 
     id = db.Column(db.Integer, primary_key=True)
+    site_id = db.Column(db.Integer, db.ForeignKey('fp_site.id'))
+
     master_uid = db.Column(db.Integer, index=True, default=0)
     user_id = db.Column(db.Integer, db.ForeignKey('fp_user.id'))
 
@@ -38,8 +40,9 @@ class Product(db.Model):
 
     cover_id = db.Column(db.Integer, db.ForeignKey('fp_asset.id'))
     brand_id = db.Column(db.Integer, db.ForeignKey('fp_brand.id'))
+
     # 是否配送
-    shipping = db.Column(db.SmallInteger, default=1)
+    is_shipping = db.Column(db.Boolean, default=True)
     price = db.Column(db.Float(15, 4))
     discount_price = db.Column(db.Float(10, 2))
     points = db.Column(db.SmallInteger, default=0)
@@ -55,9 +58,9 @@ class Product(db.Model):
     height = db.Column(db.Float(15, 8))
     length_class_id = db.Column(db.Integer)
     # 是否减库存
-    subtract = db.Column(db.SmallInteger, default=1)
+    is_subtract = db.Column(db.Boolean, default=True)
     # 最少采购数量
-    mini_cnt = db.Column(db.Integer, default=1)
+    mini_quantity = db.Column(db.Integer, default=1)
 
     sort_order = db.Column(db.SmallInteger, default=0)
     status = db.Column(db.Boolean, default=STATUS_DEFAULT)
@@ -69,21 +72,15 @@ class Product(db.Model):
     comment_count = db.Column(db.Integer, default=0)
     comment_stars = db.Column(db.Integer, default=0)
 
-
     stock = db.Column(db.Integer, default=0)
-    low_stock = db.Column(db.Integer, default=0)
+    lowest_stock = db.Column(db.Integer, default=0)
     type = db.Column(db.Enum(ProductTypeEnum), default=ProductTypeEnum.item)
     # whether recommend
-    recommend = db.Column(db.Boolean, default=False)
+    is_recommend = db.Column(db.Boolean, default=False)
 
     created_at = db.Column(db.Integer, default=timestamp)
     updated_at = db.Column(db.Integer, default=timestamp, onupdate=timestamp)
-
-    published_at = db.Column(db.Integer)
-
-
-    def __str__(self):
-        return self.sku
+    published_at = db.Column(db.Integer, default=0)
 
 
     def __repr__(self):

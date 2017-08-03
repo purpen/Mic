@@ -29,6 +29,7 @@ type="image/x-icon">
 	<link href="{{ url_for('static', filename='css/jquery.plupload.queue.css', _external=True) }}" rel="stylesheet" type="text/css">
 	<link href="{{ url_for('static', filename='css/select2.css', _external=True) }}" rel="stylesheet" type="text/css">
 	<link href="{{ url_for('static', filename='css/sweet-alert.css', _external=True) }}" rel="stylesheet" type="text/css">
+	<link href="{{ url_for('static', filename='css/summernote.css', _external=True) }}" rel="stylesheet" type="text/css">
 	<link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet" type="text/css">
     {%- endblock styles %}
 
@@ -62,11 +63,19 @@ type="image/x-icon">
 							<span class="fa fa-globe"></span>
 						</a>
 						<ul class="dropdown-menu">
-							{% for lang in support_languages %}
-							<li {% if g.locale == lang[1] %}class="active"{% endif %}>
-								<a href="/{{ lang[1] }}">{{ lang[2] }}</a>
-							</li>
-							{% endfor %}
+							{% if site_languages %}
+								{% for lang in site_languages %}
+								<li {% if g.locale == lang.code %}class="active"{% endif %}>
+									<a href="/{{ lang.code }}">{{ lang.name }}</a>
+								</li>
+								{% endfor %}
+							{% else %}
+								{% for lang in support_languages %}
+								<li {% if g.locale == lang[1] %}class="active"{% endif %}>
+									<a href="/{{ lang[1] }}">{{ lang[2] }}</a>
+								</li>
+								{% endfor %}
+							{% endif %}
 						</ul>
 					</li>
 					<li>
@@ -313,6 +322,7 @@ type="image/x-icon">
 	<script src="{{ url_for('static', filename='js/select2.js', _external=True) }}" type="text/javascript"></script>
 	<script src="{{ url_for('static', filename='js/sweet-alert.min.js', _external=True) }}" type="text/javascript"></script>
 	<script src="{{ url_for('static', filename='js/i18n/zh_CN.js', _external=True) }}" type="text/javascript"></script>
+	<script src="{{ url_for('static', filename='js/summernote.js', _external=True) }}" type="text/javascript"></script>
     {%- endblock scripts %}
 
 	{% block private_scripts %}

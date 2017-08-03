@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-07-27 16:36+0800\n"
-"PO-Revision-Date: 2017-04-05 16:10+0800\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2017-08-03 15:50+0800\n"
+"PO-Revision-Date: 2017-08-03 15:23+0800\n"
+"Last-Translator: \n"
 "Language: en\n"
 "Language-Team: en <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -26,6 +26,20 @@ msgstr ""
 msgid "USA"
 msgstr ""
 
+#: app/admin/forms/settings_forms.py:19 app/admin/forms/settings_forms.py:34
+#: app/admin/forms/settings_forms.py:101 app/constant.py:33
+#: app/templates/admin/categories/show_list.html:53
+#: app/templates/admin/country/show_countries.html:52
+msgid "Enabled"
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:19 app/admin/forms/settings_forms.py:34
+#: app/admin/forms/settings_forms.py:101 app/constant.py:34
+#: app/templates/admin/categories/show_list.html:55
+#: app/templates/admin/country/show_countries.html:54
+msgid "Disabled"
+msgstr ""
+
 #: app/translate.py:9
 msgid "Error: translation service not available."
 msgstr ""
@@ -34,34 +48,114 @@ msgstr ""
 msgid "Error: Unexpected error."
 msgstr ""
 
-#: app/admin/categories.py:171
+#: app/admin/categories.py:73
+msgid "Category name can't empty!"
+msgstr ""
+
+#: app/admin/categories.py:105
+msgid "Add category is ok!"
+msgstr ""
+
+#: app/admin/categories.py:176
 #, python-format
 msgid "Category[%s] have child node, can't deleted!!!"
 msgstr ""
 
-#: app/admin/forms/brand_forms.py:11
+#: app/admin/dashboard.py:17
+msgid "Sorry, please set up the site information first！"
+msgstr ""
+
+#: app/admin/file_manager.py:29
+msgid "Directory name isn't empty!"
+msgstr ""
+
+#: app/admin/file_manager.py:34
+msgid "Directory name only character or underline!"
+msgstr ""
+
+#: app/admin/file_manager.py:37
+msgid "Directory name is already exist!"
+msgstr ""
+
+#: app/admin/settings.py:24
+msgid "Select at least one language."
+msgstr ""
+
+#: app/admin/settings.py:30
+msgid "Select at least one currency."
+msgstr ""
+
+#: app/admin/settings.py:74
+msgid "Update site info is ok!"
+msgstr ""
+
+#: app/admin/system.py:53
+msgid "Add language is ok!"
+msgstr ""
+
+#: app/admin/system.py:79
+msgid "Edit language is ok!"
+msgstr ""
+
+#: app/admin/system.py:103
+msgid "Delete language is null!"
+msgstr ""
+
+#: app/admin/system.py:114
+msgid "Delete language is ok!"
+msgstr ""
+
+#: app/admin/forms/brand_forms.py:10
+msgid "Name"
+msgstr ""
+
+#: app/admin/forms/brand_forms.py:10
 msgid "Brand name cant empty!"
 msgstr ""
 
-#: app/admin/forms/brand_forms.py:22 app/admin/forms/brand_forms.py:36
-#: app/admin/forms/file_manager_forms.py:16
-#, python-format
-msgid "The name[%s] has been registered. Change it."
+#: app/admin/forms/brand_forms.py:11
+msgid "Features"
 msgstr ""
 
-#: app/admin/forms/category_forms.py:11 app/admin/forms/settings_forms.py:18
-#: app/templates/admin/categories/show_list.html:32
+#: app/admin/forms/brand_forms.py:12
+#: app/templates/admin/brands/show_list.html:29
+msgid "Logo"
+msgstr ""
+
+#: app/admin/forms/brand_forms.py:13
+msgid "Banner"
+msgstr ""
+
+#: app/admin/forms/brand_forms.py:14 app/admin/forms/settings_forms.py:17
+#: app/templates/admin/categories/create_and_edit.html:61
+#: app/templates/admin/products/create_and_edit.html:62
+msgid "Description"
+msgstr ""
+
+#: app/admin/forms/brand_forms.py:15
+msgid "Sort Number"
+msgstr ""
+
+#: app/admin/forms/brand_forms.py:21 app/admin/forms/brand_forms.py:35
+#: app/admin/forms/file_manager_forms.py:14
+#, python-format
+msgid "Name[%s] has been registered. Change it."
+msgstr ""
+
+#: app/admin/forms/category_forms.py:11
+#: app/templates/admin/file_manager.html:12
+msgid "Parent"
+msgstr ""
+
+#: app/admin/forms/category_forms.py:12 app/admin/forms/settings_forms.py:32
+#: app/templates/admin/categories/show_list.html:34
+#: app/templates/admin/languages/show_list.html:33
 #: app/templates/admin/products/create_and_edit.html:310
 msgid "Sort Order"
 msgstr ""
 
-#: app/admin/forms/category_forms.py:12
-#: app/templates/admin/file_manager.html:11
-msgid "Parent"
-msgstr ""
-
 #: app/admin/forms/category_forms.py:13
-msgid "Top"
+msgid "Set As Top"
 msgstr ""
 
 #: app/admin/forms/category_forms.py:14
@@ -72,93 +166,119 @@ msgstr ""
 msgid "Cover image"
 msgstr ""
 
-#: app/admin/forms/file_manager_forms.py:11
+#: app/admin/forms/file_manager_forms.py:10
 msgid "Folder name cant empty!"
 msgstr ""
 
-#: app/admin/forms/settings_forms.py:11
-msgid "Language Name"
+#: app/admin/forms/settings_forms.py:12
+msgid "Site Name"
 msgstr ""
 
-#: app/admin/forms/settings_forms.py:11
-msgid "Language name cant empty!"
+#: app/admin/forms/settings_forms.py:12 app/web/forms/auth_forms.py:14
+msgid "Store name can't empty!"
 msgstr ""
 
-#: app/admin/forms/settings_forms.py:13
-msgid "Code"
-msgstr ""
-
-#: app/admin/forms/settings_forms.py:13
-msgid "Language code cant empty!"
+#: app/admin/forms/settings_forms.py:14
+msgid "Domain"
 msgstr ""
 
 #: app/admin/forms/settings_forms.py:15
-msgid "Locale"
+msgid "Unicode"
 msgstr ""
 
 #: app/admin/forms/settings_forms.py:16
-#: app/templates/admin/categories/show_list.html:30
+msgid "Copyright"
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:18 app/admin/forms/settings_forms.py:33
+msgid "Site Status"
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:24
+#: app/templates/admin/languages/show_list.html:31
+msgid "Language Name"
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:24
+msgid "Language name cant empty!"
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:26
+msgid "Code"
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:26
+msgid "Language code cant empty!"
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:29
+msgid "Locale"
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:30
+#: app/templates/admin/categories/show_list.html:32
+#: app/templates/admin/languages/show_list.html:30
 msgid "Icon"
 msgstr ""
 
-#: app/admin/forms/settings_forms.py:17
+#: app/admin/forms/settings_forms.py:31
 msgid "Directory"
 msgstr ""
 
-#: app/admin/forms/settings_forms.py:19 app/admin/forms/settings_forms.py:53
-#: app/admin/forms/settings_forms.py:84
-#: app/templates/admin/categories/show_list.html:33
-#: app/templates/admin/products/create_and_edit.html:303
-msgid "Status"
-msgstr ""
-
-#: app/admin/forms/settings_forms.py:24 app/admin/forms/settings_forms.py:38
+#: app/admin/forms/settings_forms.py:40 app/admin/forms/settings_forms.py:54
 #, python-format
 msgid "The name[%s] already exists."
 msgstr ""
 
-#: app/admin/forms/settings_forms.py:42
+#: app/admin/forms/settings_forms.py:58
 msgid "Country Name"
 msgstr ""
 
-#: app/admin/forms/settings_forms.py:43
+#: app/admin/forms/settings_forms.py:59
 msgid "Country name cant empty!"
 msgstr ""
 
-#: app/admin/forms/settings_forms.py:44
+#: app/admin/forms/settings_forms.py:60
 msgid "ISO Code (2)"
 msgstr ""
 
-#: app/admin/forms/settings_forms.py:45
+#: app/admin/forms/settings_forms.py:61
 msgid "ISO Code (2) cant empty!"
 msgstr ""
 
-#: app/admin/forms/settings_forms.py:46
+#: app/admin/forms/settings_forms.py:62
 msgid "ISO Code (3)"
 msgstr ""
 
-#: app/admin/forms/settings_forms.py:47
+#: app/admin/forms/settings_forms.py:63
 msgid "ISO Code (3) cant empty!"
 msgstr ""
 
-#: app/admin/forms/settings_forms.py:48
+#: app/admin/forms/settings_forms.py:64
 msgid "Address Format"
 msgstr ""
 
-#: app/admin/forms/settings_forms.py:49
+#: app/admin/forms/settings_forms.py:65
 msgid "Postcode required"
 msgstr ""
 
-#: app/admin/forms/settings_forms.py:60 app/admin/forms/settings_forms.py:72
+#: app/admin/forms/settings_forms.py:69 app/admin/forms/settings_forms.py:100
+#: app/templates/admin/brands/show_list.html:33
+#: app/templates/admin/categories/show_list.html:35
+#: app/templates/admin/products/create_and_edit.html:303
+msgid "Status"
+msgstr ""
+
+#: app/admin/forms/settings_forms.py:76 app/admin/forms/settings_forms.py:88
 #, python-format
 msgid "Country name [%s] already exists."
 msgstr ""
 
-#: app/admin/forms/settings_forms.py:77
+#: app/admin/forms/settings_forms.py:93
 msgid "Currency title cant empty!"
 msgstr ""
 
-#: app/admin/forms/settings_forms.py:78
+#: app/admin/forms/settings_forms.py:94
 msgid "Currency code cant empty!"
 msgstr ""
 
@@ -214,32 +334,31 @@ msgstr ""
 msgid "Home"
 msgstr "Index"
 
-#: app/templates/layout/admin.html:90 app/templates/layout/admin.html:123
-#: app/templates/test.html:16
+#: app/templates/layout/admin.html:201 app/templates/test.html:16
 msgid "Products"
 msgstr "Goods"
 
-#: app/templates/admin/file_manager.html:6
+#: app/templates/admin/file_manager.html:7
 msgid "File Manager"
 msgstr ""
 
-#: app/templates/admin/file_manager.html:14
+#: app/templates/admin/file_manager.html:15
 msgid "Refresh"
 msgstr ""
 
-#: app/templates/admin/file_manager.html:17
+#: app/templates/admin/file_manager.html:18
 msgid "Upload"
 msgstr ""
 
-#: app/templates/admin/file_manager.html:20
+#: app/templates/admin/file_manager.html:21
 msgid "New Folder"
 msgstr ""
 
-#: app/templates/admin/brands/show_list.html:12
+#: app/templates/admin/brands/show_list.html:13
 #: app/templates/admin/categories/show_list.html:16
 #: app/templates/admin/country/show_countries.html:15
 #: app/templates/admin/currency/show_list.html:15
-#: app/templates/admin/file_manager.html:23
+#: app/templates/admin/file_manager.html:24
 #: app/templates/admin/languages/show_list.html:14
 #: app/templates/admin/lengths/show_list.html:14
 #: app/templates/admin/products/pro_list.html:14
@@ -247,15 +366,20 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: app/templates/admin/index.html:6 app/templates/layout/admin.html:67
+#: app/templates/admin/file_manager.html:133
+msgid "characters or underscore"
+msgstr ""
+
+#: app/templates/admin/index.html:6 app/templates/layout/admin.html:111
 msgid "Dashboard"
 msgstr ""
 
 #: app/templates/admin/brands/show_list.html:6
+#: app/templates/layout/admin.html:131
 msgid "Brand List"
 msgstr ""
 
-#: app/templates/admin/brands/show_list.html:9
+#: app/templates/admin/brands/show_list.html:10
 #: app/templates/admin/categories/show_list.html:13
 #: app/templates/admin/country/show_countries.html:12
 #: app/templates/admin/currency/show_list.html:12
@@ -266,14 +390,43 @@ msgstr ""
 msgid "Add New"
 msgstr ""
 
-#: app/templates/admin/brands/show_list.html:49
-#: app/templates/admin/categories/show_list.html:57
-#: app/templates/admin/categories/show_list.html:58
+#: app/templates/admin/brands/show_list.html:30
+msgid "Brand Name"
+msgstr ""
+
+#: app/templates/admin/brands/show_list.html:31
+msgid "Brand Features"
+msgstr ""
+
+#: app/templates/admin/brands/show_list.html:32
+msgid "Is Recommend?"
+msgstr ""
+
+#: app/templates/admin/brands/show_list.html:34
+#: app/templates/admin/categories/show_list.html:36
+#: app/templates/admin/languages/show_list.html:34
+#: app/templates/admin/lengths/show_list.html:33
+msgid "Action"
+msgstr ""
+
+#: app/templates/admin/brands/show_list.html:51
+msgid "Yes"
+msgstr ""
+
+#: app/templates/admin/brands/show_list.html:53
+msgid "No"
+msgstr ""
+
+#: app/templates/admin/brands/show_list.html:60
+#: app/templates/admin/brands/show_list.html:61
+#: app/templates/admin/categories/show_list.html:59
+#: app/templates/admin/categories/show_list.html:60
 #: app/templates/admin/country/show_countries.html:58
 #: app/templates/admin/country/show_countries.html:59
 #: app/templates/admin/currency/show_list.html:52
 #: app/templates/admin/currency/show_list.html:53
-#: app/templates/admin/languages/show_list.html:49
+#: app/templates/admin/languages/show_list.html:51
+#: app/templates/admin/languages/show_list.html:52
 #: app/templates/admin/lengths/show_list.html:49
 #: app/templates/admin/lengths/show_list.html:50
 #: app/templates/admin/products/pro_list.html:52
@@ -297,6 +450,7 @@ msgstr ""
 #: app/templates/admin/languages/create_and_edit.html:14
 #: app/templates/admin/lengths/create_and_edit.html:15
 #: app/templates/admin/products/create_and_edit.html:23
+#: app/templates/admin/stores/settings.html:9
 #: app/templates/admin/uploads/new_upload.html:8
 #: app/templates/admin/weights/create_and_edit.html:15
 msgid "Save"
@@ -322,55 +476,39 @@ msgstr ""
 msgid "Edit Category"
 msgstr ""
 
-#: app/templates/admin/categories/create_and_edit.html:29
+#: app/templates/admin/categories/create_and_edit.html:30
 #: app/templates/admin/products/create_and_edit.html:37
+#: app/templates/admin/stores/settings.html:17
 msgid "General"
 msgstr ""
 
-#: app/templates/admin/categories/create_and_edit.html:30
+#: app/templates/admin/categories/create_and_edit.html:33
 #: app/templates/admin/products/create_and_edit.html:38
 msgid "Data"
 msgstr ""
 
-#: app/templates/admin/categories/create_and_edit.html:48
-#: app/templates/admin/categories/show_list.html:31
+#: app/templates/admin/categories/create_and_edit.html:55
+#: app/templates/admin/categories/show_list.html:33
 msgid "Category Name"
 msgstr ""
 
-#: app/templates/admin/categories/create_and_edit.html:54
-#: app/templates/admin/products/create_and_edit.html:62
-msgid "Description"
+#: app/templates/admin/categories/create_and_edit.html:72
+msgid "Different language options"
 msgstr ""
+"Different classification information is set according to different "
+"language options"
 
-#: app/templates/admin/categories/create_and_edit.html:69
+#: app/templates/admin/categories/create_and_edit.html:84
 msgid "Select parent category"
 msgstr ""
 
-#: app/templates/admin/categories/create_and_edit.html:83
-msgid "Set As Top"
-msgstr ""
-
 #: app/templates/admin/categories/show_list.html:6
+#: app/templates/layout/admin.html:128
 msgid "Category List"
 msgstr ""
 
 #: app/templates/admin/categories/show_list.html:10
 msgid "Rebuild"
-msgstr ""
-
-#: app/templates/admin/categories/show_list.html:34
-#: app/templates/admin/lengths/show_list.html:33
-msgid "Action"
-msgstr ""
-
-#: app/templates/admin/categories/show_list.html:51
-#: app/templates/admin/country/show_countries.html:52
-msgid "Enabled"
-msgstr ""
-
-#: app/templates/admin/categories/show_list.html:53
-#: app/templates/admin/country/show_countries.html:54
-msgid "Disabled"
 msgstr ""
 
 #: app/templates/admin/country/create_and_edit.html:8
@@ -405,12 +543,16 @@ msgstr ""
 msgid "Edit Language"
 msgstr ""
 
-#: app/templates/admin/languages/create_and_edit.html:88
-msgid "Select Status"
+#: app/templates/admin/languages/create_and_edit.html:80
+msgid "The smaller the value, the better the sorting."
 msgstr ""
 
 #: app/templates/admin/languages/show_list.html:7
 msgid "Language List"
+msgstr ""
+
+#: app/templates/admin/languages/show_list.html:32
+msgid "Language Code"
 msgstr ""
 
 #: app/templates/admin/lengths/create_and_edit.html:8
@@ -507,7 +649,6 @@ msgid "Location"
 msgstr ""
 
 #: app/templates/admin/products/create_and_edit.html:198
-#: app/templates/web/header.html:15
 msgid "Price"
 msgstr ""
 
@@ -559,9 +700,42 @@ msgstr ""
 msgid "Product List"
 msgstr ""
 
+#: app/templates/admin/stores/settings.html:6
+#: app/templates/layout/admin.html:164
+msgid "Site Manage"
+msgstr ""
+
+#: app/templates/admin/stores/settings.html:20
+msgid "Site Domain"
+msgstr ""
+
+#: app/templates/admin/stores/settings.html:23
+msgid "Site SEO"
+msgstr ""
+
+#: app/templates/admin/stores/settings.html:26
+msgid "Advanced Setting"
+msgstr ""
+
+#: app/templates/admin/stores/settings.html:74
+msgid "Favicon"
+msgstr ""
+
+#: app/templates/admin/stores/settings.html:83
+msgid "Selected Language"
+msgstr ""
+
+#: app/templates/admin/stores/settings.html:90
+msgid "Default Language"
+msgstr ""
+
+#: app/templates/admin/stores/settings.html:99
+msgid "Site Currency"
+msgstr ""
+
 #: app/templates/admin/uploads/new_upload.html:15
-#: app/templates/admin/uploads/show_list.html:93
-#: app/templates/layout/admin.html:180
+#: app/templates/admin/uploads/show_list.html:10
+#: app/templates/layout/admin.html:170
 msgid "Uploads"
 msgstr ""
 
@@ -573,16 +747,8 @@ msgstr ""
 msgid "Edit upload info"
 msgstr ""
 
-#: app/templates/admin/uploads/show_list.html:86
-msgid "Added"
-msgstr ""
-
-#: app/templates/admin/uploads/show_list.html:89
+#: app/templates/admin/uploads/show_list.html:13
 msgid "Remove"
-msgstr ""
-
-#: app/templates/admin/uploads/show_list.html:101
-msgid "Upload List"
 msgstr ""
 
 #: app/templates/admin/weights/create_and_edit.html:8
@@ -605,133 +771,192 @@ msgstr ""
 msgid "Weight Class List"
 msgstr ""
 
-#: app/templates/block/_select_items.html:2 app/templates/layout/admin.html:261
-#: app/templates/layout/base.html:50
+#: app/templates/auth/login.html:7 app/templates/auth/login.html:38
+msgid "Sign In"
+msgstr ""
+
+#: app/templates/auth/login.html:33
+msgid "Keep me logged in"
+msgstr ""
+
+#: app/templates/auth/login.html:44
+msgid "No account yet? Sign up"
+msgstr ""
+
+#: app/templates/auth/register.html:7 app/templates/auth/register.html:47
+msgid "Sign Up"
+msgstr ""
+
+#: app/templates/auth/register.html:55
+msgid "Already have an account? Sign in"
+msgstr ""
+
+#: app/templates/block/_select_items.html:2 app/templates/layout/admin.html:309
+#: app/templates/layout/base.html:56
 msgid "items selected"
 msgstr ""
 
-#: app/templates/layout/admin.html:72
+#: app/templates/layout/admin.html:57
+msgid "Free Vision"
+msgstr ""
+
+#: app/templates/layout/admin.html:61
+msgid "Select languages"
+msgstr ""
+
+#: app/templates/layout/admin.html:93
+msgid "Account Settings"
+msgstr ""
+
+#: app/templates/layout/admin.html:94
+msgid "Preferences"
+msgstr ""
+
+#: app/templates/layout/admin.html:95
+msgid "Update Password"
+msgstr ""
+
+#: app/templates/layout/admin.html:97
+msgid "Sign Out"
+msgstr ""
+
+#: app/templates/layout/admin.html:116
 msgid "Overview"
 msgstr ""
 
-#: app/templates/layout/admin.html:79
+#: app/templates/layout/admin.html:123
 msgid "Catalog"
 msgstr ""
 
-#: app/templates/layout/admin.html:84
-msgid "Categories"
+#: app/templates/layout/admin.html:134
+msgid "Product list"
 msgstr ""
 
-#: app/templates/layout/admin.html:87
-msgid "Brands"
-msgstr ""
-
-#: app/templates/layout/admin.html:97 app/templates/layout/admin.html:120
+#: app/templates/layout/admin.html:141 app/templates/layout/admin.html:198
 msgid "Sales"
 msgstr ""
 
-#: app/templates/layout/admin.html:102
+#: app/templates/layout/admin.html:146
 msgid "Orders"
 msgstr ""
 
-#: app/templates/layout/admin.html:105
+#: app/templates/layout/admin.html:149
 msgid "Returns"
 msgstr ""
 
-#: app/templates/layout/admin.html:108 app/templates/layout/admin.html:126
+#: app/templates/layout/admin.html:152 app/templates/layout/admin.html:204
 msgid "Customers"
 msgstr ""
 
-#: app/templates/layout/admin.html:115
-msgid "Reports"
-msgstr ""
-
-#: app/templates/layout/admin.html:129 app/templates/layout/admin.html:148
-#: app/templates/layout/admin.html:153
-msgid "Marketing"
-msgstr ""
-
-#: app/templates/layout/admin.html:136
-msgid "Pages"
-msgstr ""
-
-#: app/templates/layout/admin.html:141
-msgid "Single Page"
-msgstr ""
-
-#: app/templates/layout/admin.html:156
-msgid "Affilicates"
-msgstr ""
-
 #: app/templates/layout/admin.html:159
-msgid "Coupons"
-msgstr ""
-
-#: app/templates/layout/admin.html:162
-msgid "Mail"
-msgstr ""
-
-#: app/templates/layout/admin.html:169
-msgid "System"
-msgstr ""
-
-#: app/templates/layout/admin.html:174
 msgid "Settings"
 msgstr ""
 
-#: app/templates/layout/admin.html:177
-msgid "Users"
+#: app/templates/layout/admin.html:167
+msgid "Child Users"
 msgstr ""
 
-#: app/templates/layout/admin.html:183
-msgid "Languages"
-msgstr ""
-
-#: app/templates/layout/admin.html:186
-msgid "Currencies"
-msgstr ""
-
-#: app/templates/layout/admin.html:189
-msgid "Countries"
-msgstr ""
-
-#: app/templates/layout/admin.html:192
+#: app/templates/layout/admin.html:174
 msgid "Zones"
 msgstr ""
 
-#: app/templates/layout/admin.html:195
+#: app/templates/layout/admin.html:177
 msgid "Geo Zones"
 msgstr ""
 
-#: app/templates/layout/admin.html:198
+#: app/templates/layout/admin.html:180
 msgid "Taxes"
 msgstr ""
 
-#: app/templates/layout/admin.html:201
+#: app/templates/layout/admin.html:183
 msgid "Length Classes"
 msgstr ""
 
-#: app/templates/layout/admin.html:204
+#: app/templates/layout/admin.html:186
 msgid "Weight Classes"
 msgstr ""
 
+#: app/templates/layout/admin.html:193
+msgid "Reports"
+msgstr ""
+
 #: app/templates/layout/admin.html:211
-msgid "Tools"
+msgid "Pages"
 msgstr ""
 
 #: app/templates/layout/admin.html:216
+msgid "Single Page"
+msgstr ""
+
+#: app/templates/layout/admin.html:223
+msgid "Marketing"
+msgstr ""
+
+#: app/templates/layout/admin.html:228
+msgid "Affilicates"
+msgstr ""
+
+#: app/templates/layout/admin.html:231
+msgid "Coupons"
+msgstr ""
+
+#: app/templates/layout/admin.html:234
+msgid "Mail"
+msgstr ""
+
+#: app/templates/layout/admin.html:241
+msgid "Tools"
+msgstr ""
+
+#: app/templates/layout/admin.html:246
 msgid "Backup / Restore"
 msgstr ""
 
-#: app/templates/layout/admin.html:219
+#: app/templates/layout/admin.html:249
 msgid "Error Logs"
 msgstr ""
 
-#: app/templates/web/header.html:14
-msgid "Index"
+#: app/templates/layout/admin.html:257
+msgid "System"
 msgstr ""
 
-#: app/templates/web/index.html:14
+#: app/templates/layout/admin.html:262
+msgid "Languages"
+msgstr ""
+
+#: app/templates/layout/admin.html:265
+msgid "Currencies"
+msgstr ""
+
+#: app/templates/layout/admin.html:268
+msgid "Countries"
+msgstr ""
+
+#: app/templates/web/header.html:23
+msgid "Tour"
+msgstr ""
+
+#: app/templates/web/header.html:24
+msgid "Pricing"
+msgstr ""
+
+#: app/templates/web/header.html:25
+msgid "Download"
+msgstr ""
+
+#: app/templates/web/header.html:26
+msgid "Customer"
+msgstr ""
+
+#: app/templates/web/header.html:27
+msgid "About Us"
+msgstr ""
+
+#: app/templates/web/header.html:28
+msgid "Help"
+msgstr ""
+
+#: app/templates/web/index.html:10
 msgid "一键开通"
 msgstr ""
 
@@ -753,6 +978,10 @@ msgstr ""
 
 #: app/templates/web/setup.html:64
 msgid "Terms"
+msgstr ""
+
+#: app/web/views.py:43
+msgid "Setup store is Ok!"
 msgstr ""
 
 #: app/web/forms/auth_forms.py:10
@@ -783,10 +1012,6 @@ msgstr ""
 msgid "Store Name"
 msgstr ""
 
-#: app/web/forms/auth_forms.py:14
-msgid "Store name can't empty!"
-msgstr ""
-
 #: app/web/forms/auth_forms.py:18
 msgid "Email already registered."
 msgstr ""
@@ -805,22 +1030,4 @@ msgstr ""
 
 #~ msgid "Invalid login. Please login again."
 #~ msgstr "Relogin."
-
-#~ msgid "Brands List"
-#~ msgstr ""
-
-#~ msgid "Add brand info"
-#~ msgstr ""
-
-#~ msgid "Edit brand info"
-#~ msgstr ""
-
-#~ msgid "Currency"
-#~ msgstr ""
-
-#~ msgid "Filter"
-#~ msgstr ""
-
-#~ msgid "Store Location"
-#~ msgstr ""
 

@@ -7,10 +7,10 @@
 
 		<div class="pull-right m-t-10">
 			{% include 'block/_select_items.html' %}
-			<a class="btn btn-default" href="{{ url_for('admin.repair_category_path') }}" data-toggle="tooltip" title="" data-original-title="{{ _('Rebuild') }}">
+			<a class="btn btn-default pjax" href="{{ url_for('admin.repair_category_path') }}" data-toggle="tooltip" title="" data-original-title="{{ _('Rebuild') }}">
 				<i class="fa fa-refresh"></i>
 			</a>
-			<a href="{{ url_for('admin.create_category') }}" class="btn btn-icon btn-primary" data-toggle="tooltip" data-original-title="{{ _('Add New') }}">
+			<a href="{{ url_for('admin.create_category') }}" class="btn btn-icon btn-primary pjax" data-toggle="tooltip" data-original-title="{{ _('Add New') }}">
 				<i class="fa fa-plus"></i>
 			</a>
 			<button type="button" data-form-id="form-categories" class="btn btn-icon btn-danger delete-all hidden" data-toggle="tooltip" data-original-title="{{ _('Delete') }}">
@@ -21,6 +21,8 @@
 
 	<div class="card-box table-responsive">
 		<form id="form-categories" action="{{ url_for('admin.delete_category') }}" method="post">
+			<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" >
+
 			<table class="table table-bordered table-hover" role="grid">
 				<thead>
 					<tr role="row" class="active">
@@ -36,30 +38,30 @@
 				</thead>
 
 				<tbody>
-				{% for cate in paginated_categories %}
-				<tr role="row">
-					<td class="text-center">
-						<input name="selected[]" class="check-one" value="{{ cate.id }}" type="checkbox">
-					</td>
-					<td class="text-center">
-						<img src="{{ cate.icon.view_url }}" width="60px">
-					</td>
-					<td>{{ cate.name|safe }}</td>
-					<td class="text-center">{{ cate.sort_order }}</td>
-					<td class="text-right">
-						{% if cate.status %}
-						<span class="indicator success">{{ _('Enabled') }}</span>
-						{% else %}
-						<span class="indicator warning">{{ _('Disabled') }}</span>
-						{% endif %}
-					</td>
-					<td class="actions text-right">
-						<a href="{{ url_for('admin.edit_category', id=cate.id) }}" class="btn btn-link" data-toggle="tooltip" data-original-title="{{ _('Edit') }}">
-							{{ _('Edit') }}
-						</a>
-					</td>
-				</tr>
-				{% endfor %}
+					{% for cate in paginated_categories %}
+					<tr role="row">
+						<td class="text-center">
+							<input name="selected[]" class="check-one" value="{{ cate.id }}" type="checkbox">
+						</td>
+						<td class="text-center">
+							<img src="{{ cate.icon.view_url }}" width="60px">
+						</td>
+						<td>{{ cate.name|safe }}</td>
+						<td class="text-center">{{ cate.sort_order }}</td>
+						<td class="text-right">
+							{% if cate.status %}
+							<span class="indicator success">{{ _('Enabled') }}</span>
+							{% else %}
+							<span class="indicator warning">{{ _('Disabled') }}</span>
+							{% endif %}
+						</td>
+						<td class="actions text-right">
+							<a href="{{ url_for('admin.edit_category', id=cate.id) }}" class="btn btn-link" data-toggle="tooltip" data-original-title="{{ _('Edit') }}">
+								{{ _('Edit') }}
+							</a>
+						</td>
+					</tr>
+					{% endfor %}
 				</tbody>
 			</table>
 
@@ -76,9 +78,12 @@
 	</div>
 
 </div>
+
 {% if is_pjax %}
-<script type="text/javascript">
-	mic.hook_check_all();
-</script>
+	<script type="text/javascript">
+		mic.hook_check_all();
+		mic.hook_delete_all();
+	</script>
 {% endif %}
+
 {% endblock %}
