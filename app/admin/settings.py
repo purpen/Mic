@@ -16,8 +16,27 @@ from . import admin
 @login_required
 def site():
     form = SiteForm()
+
+    # 支持的语言
+    languages = Language.query.filter_by(status=1).all()
+    # 支持的货币
+    currencies = Currency.query.order_by(Currency.id.asc()).all()
+    # 支持的国家
+    countries = Country.query.filter_by(status=1).all()
+
+    form.default_country.choices = [(country.id, country.name) for country in countries]
+    form.default_language.choices = [(lang.id, lang.name) for lang in languages]
+    form.default_currency.choices = [(currency.id, '%s %s' % (currency.symbol_left, currency.title)) for currency in
+                                     currencies]
+
     site = Site.query.filter_by(master_uid=Master.master_uid()).first()
     if form.validate_on_submit():
+        # 国家选项
+        countries = request.form.getlist('countries[]')
+        if countries is None:
+            flash(gettext('Select at least one country.'), 'danger')
+            return redirect(url_for('.site'))
+
         # 语言选项
         languages = request.form.getlist('languages[]')
         if languages is None:
@@ -29,6 +48,11 @@ def site():
         if currencies is None:
             flash(gettext('Select at least one currency.'), 'danger')
             return redirect(url_for('.site'))
+
+        # 选中的国家
+        select_countries = []
+        for country_id in countries:
+            select_countries.append(Country.query.get(int(country_id)))
 
         # 选中的语言选项
         select_languages = []
@@ -47,12 +71,18 @@ def site():
                 serial_no = Site.make_unique_serial_no(),
                 name = form.name.data,
                 domain = form.domain.data,
-                description = form.description.data
+                description = form.description.data,
+                status = form.status.data,
+                default_country = form.default_country.data,
+                default_language = form.default_language.data,
+                default_currency = form.default_currency.data
             )
             db.session.add(new_site)
 
-            new_site.update_languages(*select_languages)
-            new_site.update_currencies(*select_currencies)
+            # 更新关系表
+            new_site.update_countries(select_countries)
+            new_site.update_languages(select_languages)
+            new_site.update_currencies(select_currencies)
 
             site_id = new_site.id
         else:
@@ -61,9 +91,15 @@ def site():
             site.name = form.name.data
             site.domain = form.domain.data
             site.description = form.description.data
+            site.default_country = form.default_country.data
+            site.default_language = form.default_language.data
+            site.default_currency = form.default_currency.data
+            site.status = form.status.data
 
-            site.update_languages(*select_languages)
-            site.update_currencies(*select_currencies)
+            # 更新关系表
+            site.update_countries(select_countries)
+            site.update_languages(select_languages)
+            site.update_currencies(select_currencies)
 
         # 更新配置状态
         master = User.query.get_or_404(Master.master_uid())
@@ -77,10 +113,6 @@ def site():
     else:
         current_app.logger.debug('Update site is fail: %s!' % form.errors)
 
-    # 支持的语言
-    languages = Language.query.filter_by(status=1).all()
-    # 支持的货币
-    currencies = Currency.query.order_by(Currency.id.asc()).all()
 
     # 初始化数据
     if site is not None:
@@ -88,12 +120,17 @@ def site():
         form.copyright.data = site.copyright
         form.description.data = site.description
         form.status.data = site.status
+        form.default_country.data = site.default_country
+        form.default_language.data = site.default_language
+        form.default_currency.data = site.default_currency
 
     return render_template('admin/stores/settings.html',
                            form=form,
                            site=site,
                            languages=languages,
                            currencies=currencies,
+                           countries=countries,
+                           select_countries=[country.id for country in site.countries],
                            select_languages=[lang.id for lang in site.languages],
                            select_currencies=[currency.id for currency in site.currencies])
 

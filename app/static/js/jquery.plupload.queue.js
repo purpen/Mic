@@ -82,6 +82,11 @@ used as it is.
 
 	function renderUI(id, target) {
 		// Remove all existing non plupload items
+		var init_html = '';
+		if ($('#'+ id +'_filelist').length > 0) {
+			init_html = $('#'+ id +'_filelist').html();
+		}
+
 		target.contents().each(function(i, node) {
 			node = $(node);
 
@@ -95,44 +100,35 @@ used as it is.
 				'<div id="' + id + '_container" class="plupload_container">' +
 					'<div class="plupload">' +
 						'<div class="plupload_content">' +
-							/*
-							'<div class="plupload_filelist_header">' +
-								'<div class="plupload_file_name">' + _('Filename') + '</div>' +
-								'<div class="plupload_file_action">&nbsp;</div>' +
-								'<div class="plupload_file_status"><span>' + _('Status') + '</span></div>' +
-								'<div class="plupload_file_size">' + _('Size') + '</div>' +
-								'<div class="plupload_clearer">&nbsp;</div>' +
-							'</div>' +*/
-
-							'<ul id="' + id + '_filelist" class="plupload_filelist"></ul>' +
-
-							//'<div class="plupload_filelist_footer">' +
-								//'<div class="plupload_file_name">' +
-									//'<div class="plupload_buttons">' +
-										// '<a href="#" class="plupload_button plupload_add" id="' + id + '_browse">' + _('Add Files') + '</a>' +
-										// '<a href="#" class="plupload_button plupload_start">' + _('Start Upload') + '</a>' +
-									//'</div>' +
-									//'<span class="plupload_upload_status"></span>' +
-								//'</div>' +
-								//'<div class="plupload_file_action"></div>' +
-
-								'<div class="plupload_progress">' +
-									'<div class="progress">' +
-										'<div class="progress-bar progress-bar-success plupload_progress_bar progress-bar-striped" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"><span class="sr-only">0% Complete</span></div>' +
-									'</div>' +
-								'</div>' +
-								'<div class="plupload_file_status"><span class="plupload_total_status">0%</span></div>' +
-								'<div class="plupload_file_size"><span class="plupload_total_file_size">0 b</span></div>' +
-								'<div class="plupload_upload_status"></div>' +
-
-								'<div class="plupload_clearer">&nbsp;</div>' +
-							//'</div>' +
+							'<ul id="' + id + '_filelist" class="plupload_filelist">'+ init_html +'</ul>' +
 						'</div>' +
 					'</div>' +
 				'</div>' +
 				'<input type="hidden" id="' + id + '_count" name="' + id + '_count" value="0" />' +
 			'</div>'
 		);
+
+		$('a.directory').on('click', function(e) {
+			e.preventDefault();
+
+			var args = mic.get_url_params($(this).attr('href'));
+			if (args || args != null) {
+				$.cookie('img_last_open_folder', args['directory']);
+			}
+
+			$('#modal-image').load($(this).attr('href'));
+		});
+
+		$('a.thumbnail').on('click', function(e) {
+			e.preventDefault();
+			var asset_id = $(this).data('target'), up_target = $(this).data('ele');
+
+			$('#'+ up_target +'_thumb_image').find('img').attr('src', $(this).find('img').attr('src'));
+
+			$('#'+ up_target +'_id').val(asset_id);
+
+			$('#modal-image').modal('hide');
+		});
 	}
 
 	$.fn.pluploadQueue = function(settings) {
@@ -192,7 +188,7 @@ used as it is.
 				}
 
 				function updateTotalProgress() {
-					$('span.plupload_total_status', target).html(uploader.total.percent + '%');
+					$('span.plupload_total_status', target).html(uploader.total.percent + '<small>%</small>');
 					$('div.plupload_progress_bar', target)
 						.addClass('active')
 						.css('width', uploader.total.percent + '%');
@@ -202,44 +198,34 @@ used as it is.
 				}
 
 				function updateList() {
-					var fileList = $('ul.plupload_filelist', target).html(''), inputCount = 0, inputHTML;
+					var fileList = $('ul.plupload_filelist', target), inputCount = 0, inputHTML;
 
 					$.each(uploader.files, function(i, file) {
 						inputHTML = '';
 
 						if (file.status == plupload.DONE) {
-							if (file.target_name) {
-								inputHTML += '<input type="hidden" name="' + id + '_' + inputCount + '_tmpname" value="' + plupload.xmlEncode(file.target_name) + '" />';
-							}
-
-							inputHTML += '<input type="hidden" name="' + id + '_' + inputCount + '_name" value="' + plupload.xmlEncode(file.name) + '" />';
-							inputHTML += '<input type="hidden" name="' + id + '_' + inputCount + '_status" value="' + (file.status == plupload.DONE ? 'done' : 'failed') + '" />';
-
 							inputCount++;
-
 							$('#' + id + '_count').val(inputCount);
 						}
 
-						/*
-						fileList.append(
-							'<li id="' + file.id + '">' +
-								'<div class="plupload_file_name"><span>' + file.name + '</span></div>' +
-								'<div class="plupload_file_action"><a href="#"></a></div>' +
-								'<div class="plupload_file_status">' + file.percent + '%</div>' +
-								'<div class="plupload_file_size">' + plupload.formatSize(file.size) + '</div>' +
-								'<div class="plupload_clearer">&nbsp;</div>' +
-								inputHTML +
-							'</li>'
-						);*/
+						if (file.status == plupload.QUEUED) {
+							fileList.prepend(
+								'<li id="' + file.id + '">' +
+									'<div class="plupload_file_name"><span>' + file.name + '</span></div>' +
+									'<div class="plupload_file_action"><a href="#"></a></div>' +
+									'<div class="plupload_file_status"><i class="fa fa-spinner fa-spin"></i></div>' +
+								'</li>'
+							);
 
-						handleStatus(file);
+							handleStatus(file);
 
-						$('#' + file.id + '.plupload_delete a').click(function(e) {
-							$('#' + file.id).remove();
-							uploader.removeFile(file);
+							$('#' + file.id + '.plupload_delete a').click(function(e) {
+								$('#' + file.id).remove();
+								uploader.removeFile(file);
 
-							e.preventDefault();
-						});
+								e.preventDefault();
+							});
+						}
 					});
 
 					$('span.plupload_total_file_size', target).html(plupload.formatSize(uploader.total.size));
@@ -256,12 +242,6 @@ used as it is.
 					fileList[0].scrollTop = fileList[0].scrollHeight;
 
 					updateTotalProgress();
-
-					// Re-add drag message if there is no files
-					if (!uploader.files.length && uploader.features.dragdrop && uploader.settings.dragdrop) {
-						$('#' + id + '_filelist').append('<li class="plupload_droptext">' + _("Drag files here.") + '</li>');
-					}
-
 
 				}
 
@@ -364,16 +344,12 @@ used as it is.
 
 				uploader.bind("PostInit", function(up) {
 					// features are populated only after input components are fully instantiated
-					if (up.settings.dragdrop && up.features.dragdrop) {
-						$('#' + id + '_filelist').append('<li class="plupload_droptext">' + _("Drag files here.") + '</li>');
-					}
 				});
 
 				uploader.init();
 
 				uploader.bind('StateChanged', function() {
 					if (uploader.state === plupload.STARTED) {
-						// $('li.plupload_delete a,div.plupload_buttons', target).hide();
 						uploader.disableBrowse(true);
 
 						$('div.plupload_upload_status,div.plupload_progress,a.plupload_stop', target).css('display', 'block');
@@ -384,15 +360,10 @@ used as it is.
 						}
 					} else {
 						updateList();
-						//$('a.plupload_stop,div.plupload_progress', target).hide();
-						//$('a.plupload_delete', target).css('display', 'block');
 
 						if (settings.multiple_queues && uploader.total.uploaded + uploader.total.failed == uploader.files.length) {
 							$(".plupload_buttons,.plupload_upload_status", target).css("display", "inline");
 							uploader.disableBrowse(false);
-
-							//$(".plupload_start", target).addClass("plupload_disabled");
-							//$('span.plupload_total_status,span.plupload_total_file_size', target).hide();
 						}
 					}
 				});
@@ -415,25 +386,12 @@ used as it is.
 				uploader.bind('FileUploaded', function(up, file, responseObject) {
 					handleStatus(file);
 					var json_result = eval('(' + responseObject.response + ')');
-					$.get('/admin/file_manager/get_asset/'+parseInt(json_result.ids[0]), function (result) {
-						//var json_a_res = eval('(' + result + ')');
-						$('#uploader_result').prepend(
-							'<div class="col-sm-3 col-xs-6 text-center">' +
-								'<a href="#" data-target="'+ result.id +'" class="thumbnail">' +
-									'<img src="'+ result.view_url +'" alt="'+ result.filename +'">' +
-								'</a>' +
-								'<label>' +
-								'<input name="path[]" value="'+ result.filepath +'" type="checkbox">' + result.filename +
-								'</label>' +
-							'</div>'
-						);
-						hock_thumbnail();
-					});
+					settings.upload_result.call(this, file.id, json_result.ids[0]);
 				});
 
 				uploader.bind("UploadProgress", function(up, file) {
 					// Set file specific progress
-					$('#' + file.id + ' div.plupload_file_status', target).html(file.percent + '%');
+					$('#' + file.id + ' div.plupload_file_status', target).html(file.percent + '<small>%</small>');
 
 					handleStatus(file);
 					updateTotalProgress();

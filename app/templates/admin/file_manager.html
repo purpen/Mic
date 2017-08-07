@@ -8,7 +8,7 @@
 		</div>
 		<div class="modal-body">
 			<div class="row">
-				<div class="col-sm-5">
+				<div class="col-sm-10">
 					<a href="{{ url_for('admin.show_asset') }}?directory={{ parent_directory }}&up_target={{ up_target }}" data-toggle="tooltip" id="button-parent" class="btn btn-default" data-original-title="{{ _('Parent') }}">
 						<i class="fa fa-level-up"></i>
 					</a>
@@ -25,38 +25,40 @@
 						<i class="fa fa-trash-o"></i>
 					</button>
 				</div>
-				<div class="col-sm-7">
-					<div id="uploader"></div>
-				</div>
 			</div>
-			<hr>
-			<div class="row" id="uploader_result">
-				{% for d in all_directory %}
-				<div class="col-sm-3 col-xs-6 text-center">
-					<div class="text-center">
-						<a href="{{ url_for('admin.show_asset') }}?up_target={{ up_target }}&directory={% if current_directory %}{{ current_directory }}/{% endif %}{{ d.name }}" class="directory" style="vertical-align: middle;">
-							<i class="fa fa-folder fa-5x"></i>
-						</a>
+			<div class="row">
+				<div class="col-sm-12">
+					<div id="uploader" class="m-t-10">
+						<ul id="uploader_filelist" class="plupload_filelist">
+							{% for d in all_directory %}
+							<li id="{{ d.id }}" class="plupload_done">
+								<div class="text-center m-t-10">
+									<a href="{{ url_for('admin.show_asset') }}?up_target={{ up_target }}&directory={% if current_directory %}{{ current_directory }}/{% endif %}{{ d.name }}" class="directory" style="vertical-align: middle;">
+										<i class="fa fa-folder fa-5x"></i>
+									</a>
+								</div>
+								<p class="text-center">
+									<input name="path[]" value="{{ d.name }}" type="checkbox" class="checked">
+									{{ d.name|safe }}
+								</p>
+							</li>
+							{% endfor %}
+
+							{% for a in paginated_assets.items %}
+							<li id="{{ a.id }}" class="plupload_done">
+								<a href="{{ a.view_url }}" class="thumbnail" data-target="{{ a.id }}" data-ele="{{ up_target }}">
+									<img src="{{ a.view_url }}" alt="{{ a.filename }}" title="{{ a.filename }}">
+								</a>
+								<label>
+									<input name="path[]" value="{{ a.filepath }}" type="checkbox">
+									{{ a.filename|short_filename }}
+								</label>
+							</li>
+							{% endfor %}
+
+						</ul>
 					</div>
-					<label>
-						<input name="path[]" value="{{ d.name }}" type="checkbox">
-						{{ d.name|safe }}
-					</label>
 				</div>
-				{% endfor %}
-
-				{% for a in paginated_assets.items %}
-				<div class="col-sm-3 col-xs-6 text-center">
-					<a href="{{ a.view_url }}" class="thumbnail" data-target="{{ a.id }}">
-						<img src="{{ a.view_url }}" alt="{{ a.filename }}" title="{{ a.filename }}">
-					</a>
-					<label>
-						<input name="path[]" value="{{ a.filepath }}" type="checkbox">
-						{{ a.filename|short_filename }}
-					</label>
-				</div>
-				{% endfor %}
-
 			</div>
 		</div>
 		<div class="modal-footer">
@@ -183,6 +185,29 @@
 		multipart_params: {
         	'directory': '{{ current_directory }}',
 			'csrf_token': csrf_token
+		},
+		upload_result: function (fid, asset_id) {
+			$.get('/admin/file_manager/get_asset/'+asset_id+'?fid='+fid, function (result) {
+				$('#'+ fid ).html(
+					'<a href="#" data-target="'+ result.id +'" data-ele="{{ up_target }}" class="thumbnail">' +
+					'<img src="'+ result.view_url +'" alt="'+ result.filename +'" width="100px">' +
+					'</a>' +
+					'<label>' +
+					'<input name="path[]" value="'+ result.filepath +'" type="checkbox">' + result.filename +
+					'</label>'
+				);
+
+				$('a.thumbnail').on('click', function(e) {
+					e.preventDefault();
+					var asset_id = $(this).data('target'), up_target = $(this).data('ele');
+
+					$('#'+ up_target +'_thumb_image').find('img').attr('src', $(this).find('img').attr('src'));
+
+					$('#'+ up_target +'_id').val(asset_id);
+
+					$('#modal-image').modal('hide');
+				});
+			});
 		},
         filters : {
             // Maximum file size

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from flask import render_template, flash, redirect, request, url_for
 from flask_login import login_user, logout_user, login_required, current_user
 from app import db
@@ -16,7 +15,9 @@ def login():
 		if user is not None and user.verify_password(form.password.data):
 			login_user(user, form.remember_me.data)
 			return redirect(request.args.get('next') or url_for('web.index'))
-		flash('Invalid username or password.')
+
+		flash('Invalid username or password.', 'danger')
+
 	return render_template('auth/login.html', form=form)
 
 

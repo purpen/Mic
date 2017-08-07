@@ -262,8 +262,13 @@ class AnonymousUser(AnonymousUserMixin):
     def locale(self):
         return current_app.config['BABEL_DEFAULT_LOCALE']
 
+    @property
+    def is_setting(self):
+        return False
+
     def belong_roles(self):
         return []
+
 
 login_manager.anonymous_user = AnonymousUser
 

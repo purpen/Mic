@@ -1,7 +1,90 @@
 {% extends "layout/admin.html" %}
 
-{% block jquery %}
+{% block private_styles %}
+<style type="text/css">
+	.plupload_filelist li {
+		border: 1px solid #ccc;
+		display: inline-block;
+		height: 100px;
+		margin-right: 10px;
+		margin-top: 10px;
+		width: 100px;
+		overflow: hidden;
+	}
+	.plupload_filelist li.plupload_droptext {
+		border: medium none;
+		margin: 0;
+		padding: 0;
+		width: 100%;
+	}
+	.plupload_filelist li a.thumbnail {
+		display: flex;
+		flex-direction: column;
+		height: 100px;
+		justify-content: center;
+		margin-bottom: 0;
+		width: 100px;
+	}
+	.plupload_file_status {
+		color: #98d85b;
+		display: block;
+		font-size: 24px;
+		margin: 30px auto 0;
+		text-align: center;
+		width: 50px;
+	}
+	.plupload_file_status small {
+		font-size: 60%;
+	}
+</style>
+{% endblock private_styles %}
 
+{% block private_scripts %}
+<script type="text/javascript">
+	var hock_thumbnail = function () {
+
+	};
+</script>
+{% endblock private_scripts %}
+
+{% block jquery %}
+{#<script type="text/javascript">#}
+	$("#mp_uploader").pluploadQueue({
+		// General settings
+		url : '{{ url_for("admin.flupload") }}',
+
+		chunk_size : '1mb',
+		rename : false,
+		dragdrop: true,
+		multiple_queues: true,
+		multipart_params: {
+			'directory': 'category',
+			'csrf_token': csrf_token
+		},
+		upload_result: function (fid, asset_id) {
+			$.get('/admin/file_manager/get_asset/'+asset_id+'?fid='+fid, function (result) {
+				$('#'+ fid ).html(
+					'<a href="#" data-target="'+ result.id +'" class="thumbnail">' +
+					'<img src="'+ result.view_url +'" alt="'+ result.filename +'" width="100px">' +
+					'</a>'
+				);
+			});
+		},
+		filters : {
+			// Maximum file size
+			max_file_size : '10mb',
+			// Specify what files to browse for
+			mime_types: [
+				{title : 'Image files', extensions : 'jpg,jpeg,gif,png'}
+			]
+		},
+
+		flash_swf_url : "{{ url_for('static', filename='js/Moxie.swf', _external=True) }}",
+
+		silverlight_xap_url : "{{ url_for('static', filename='js/Moxie.xap', _external=True) }}"
+	});
+
+{#</script>#}
 {% endblock %}
 
 {% block page_content %}
@@ -17,6 +100,21 @@
 	</div>
 
 	<div class="card-box table-responsive">
+		<button class="btn btn-primary btn-lg" id="mp_uploader_browse">
+			<i class="fa fa-plus-circle fa-2x"></i>
+		</button>
+		<span class="text-danger">* 图片可以拖拽排序，10Mb以内，JPG／PNG格式，最多20张图片</span>
+
+		<div id="mp_uploader" class="m-t-20">
+			<p>Your browser doesn't have Flash, Silverlight or HTML5 support.</p>
+		</div>
+
+		<div id="uploader_result" class="bg-info m-t-20">
+
+
+		</div>
+
+
 
 	</div>
 

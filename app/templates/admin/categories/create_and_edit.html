@@ -160,4 +160,12 @@
 
 	</div>
 </div>
+
+{% if is_pjax %}
+	<script type="text/javascript">
+		mic.hook_tooltip_toggle();
+		mic.hook_select2();
+	</script>
+{% endif %}
+
 {% endblock %}

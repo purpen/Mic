@@ -20,7 +20,6 @@ class Language(db.Model):
     __tablename__ = 'fp_language'
 
     id = db.Column(db.Integer, primary_key=True)
-    master_uid = db.Column(db.Integer, index=True, default=0)
     name = db.Column(db.String(64), unique=True, index=True, nullable=False)
     code = db.Column(db.String(5), unique=True, nullable=False)
     locale = db.Column(db.String(255), nullable=False)
@@ -43,7 +42,6 @@ class Currency(db.Model):
     __tablename__ = 'fp_currency'
 
     id = db.Column(db.Integer, primary_key=True)
-    master_uid = db.Column(db.Integer, index=True, default=0)
     title = db.Column(db.String(32), unique=True, nullable=False)
     code = db.Column(db.String(3), nullable=False)
     symbol_left = db.Column(db.String(12), nullable=True)
@@ -63,7 +61,6 @@ class Country(db.Model):
     __tablename__ = 'fp_country'
 
     id = db.Column(db.Integer, primary_key=True)
-    master_uid = db.Column(db.Integer, index=True, default=0)
     name = db.Column(db.String(128), unique=True, index=True, nullable=False)
     iso_code_2 = db.Column(db.String(2), nullable=True)
     iso_code_3 = db.Column(db.String(3), nullable=True)
@@ -71,9 +68,8 @@ class Country(db.Model):
     postcode_required = db.Column(db.Boolean, default=False)
     status = db.Column(db.SmallInteger, default=1)
 
-
-    def __str__(self):
-        return self.name
+    def __repr__(self):
+        return '<Country {}>'.format(self.id)
 
 
 
@@ -141,6 +137,19 @@ class Counter(db.Model):
             db.session.add(new_counter)
 
         return total_count
+
+    @staticmethod
+    def gen_product_sn(length=8):
+        """生成产品sku"""
+        serial_no = '8'
+        serial_no += time.strftime('%m')
+        rd = str(Counter.get_next_sequence())
+        z = ''
+        if len(rd) < length:
+            for i in range(length - len(rd)):
+                z += '0'
+
+        return ''.join([serial_no, z, rd])
 
 
     @staticmethod

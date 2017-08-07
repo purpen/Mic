@@ -1,20 +1,76 @@
-{% extends pjax("layout/admin.html") %}
+{% extends "layout/admin.html" %}
+
+{% block before_scripts %}
+{#<script type="text/javascript">#}
+var hook_product_uploader = function () {
+	$("#mp-uploader").pluploadQueue({
+		// General settings
+		url : '{{ url_for("admin.flupload") }}',
+
+		chunk_size : '1mb',
+		rename : false,
+		dragdrop: true,
+		multiple_queues: true,
+		multipart_params: {
+			'directory': 'category',
+			'csrf_token': csrf_token
+		},
+		upload_result: function (fid, asset_id) {
+			$.get('/admin/file_manager/get_asset/'+asset_id+'?fid='+fid, function (result) {
+				$('#'+ fid ).html(
+					'<a href="#" data-target="'+ result.id +'" class="thumbnail">' +
+					'<img src="'+ result.view_url +'" alt="'+ result.filename +'" width="100px">' +
+					'<input type="hidden" name="images[]" value="'+ result.id +'">' +
+					'</a>'
+				);
+			});
+		},
+		filters : {
+			// Maximum file size
+			max_file_size : '10mb',
+			// Specify what files to browse for
+			mime_types: [
+				{title : 'Image files', extensions : 'jpg,jpeg,gif,png'}
+			]
+		},
+
+		flash_swf_url : "{{ url_for('static', filename='js/Moxie.swf', _external=True) }}",
+
+		silverlight_xap_url : "{{ url_for('static', filename='js/Moxie.xap', _external=True) }}"
+	});
+};
+
+var loaded_product_images = function () {
+	var image_list = {{ image_list|safe }};
+	for (var i=0; i< image_list.length; i++) {
+		$('#mp-uploader_filelist').append(
+			'<li id="'+ image_list[0].id +'" class="plupload_done">' +
+			'<a href="#" data-target="'+ image_list[0].id +'" class="thumbnail">' +
+			'<img src="'+ image_list[0].view_url +'" alt="'+ image_list[0].filename +'" width="100px">' +
+			'<input type="hidden" name="images[]" value="'+ image_list[0].id +'">' +
+			'</a>' +
+			'</li>'
+		);
+	}
+};
+{#</script>#}
+{% endblock before_scripts %}
 
 {% block jquery %}
 {#<script type="text/javascript">#}
 	mic.hook_summer_editor();
+	mic.hook_form_datetime();
+	hook_product_uploader();
+	loaded_product_images();
 
-	$('.btn.more-options').click(function () {
-		var $this = $(this);
-		if ($this.hasClass('dropup')) {
-			$('#more-options').slideUp('normal', function () {
-				$this.removeClass('dropup');
-			});
-		} else {
-			$('#more-options').slideDown('normal', function () {
-				$this.addClass('dropup');
-			});
-		}
+	$('.ajax-delete-sku').click(function () {
+		var post_url = $(this).attr('href');
+		$.post(post_url, {'csrf_token': csrf_token}, function (result) {
+			if (result.success) {
+				$('#tr_sku_'+ result.data.id).remove();
+			}
+		}, 'json');
+		return false;
 	});
 {#</script>#}
 {% endblock jquery %}
@@ -43,9 +99,13 @@
 		<form class="form-horizontal" role="form" method="post" id="form-product" action="">
 			{{ form.hidden_tag() }}
 
-			<ul class="nav nav-tabs nav-tabs-google">
-				<li class="active"><a href="#tab-general" data-toggle="tab">{{ _('General') }}</a></li>
+			<ul class="nav nav-tabs nav-tabs-google" role="tablist">
+				<li class="active"><a href="#tab-general" data-toggle="tab" class="waves-effect waves-light">{{ _('General') }}</a></li>
 				<li><a href="#tab-data" data-toggle="tab">{{ _('Data') }}</a></li>
+				{% if mode == 'edit' %}
+				<li><a href="#tab-skus" data-toggle="tab">{{ _('SKU') }}</a></li>
+				{% endif %}
+				<li><a href="#tab-optional" data-toggle="tab">{{ _('Optional Settings') }}</a></li>
 			</ul>
 
 			<div class="tab-content m-t-20">
@@ -66,43 +126,43 @@
 								{% for lang in languages %}
 								<div id="language{{ lang.id }}" class="tab-pane {% if loop.first %} active{% endif %}">
 									<div class="form-group required">
-										<label class="col-md-3 control-label">{{ _('Product Name') }}</label>
-										<div class="col-md-9">
+										<label class="col-md-2 control-label">{{ _('Product Name') }}</label>
+										<div class="col-md-10">
 											<input class="form-control" name="product_description[{{ lang.id }}][name]" value="{% if all_descriptions %}{{ all_descriptions[lang.id]['name'] }}{% endif %}" type="text">
 										</div>
 									</div>
 									<div class="form-group">
-										<label class="col-md-3 control-label">{{ _('Product Description') }}</label>
-										<div class="col-md-9">
+										<label class="col-md-2 control-label">{{ _('Product Description') }}</label>
+										<div class="col-md-10">
 											<textarea name="product_description[{{ lang.id }}][description]" class="form-control summernote">{% if all_descriptions %}{{ all_descriptions[lang.id]['description'] }}{% endif %}</textarea>
 										</div>
 									</div>
 									<div class="form-group">
-										<label class="col-md-3 control-label">{{ _('Meta Title') }}</label>
-										<div class="col-md-9">
+										<label class="col-md-2 control-label">{{ _('Meta Title') }}</label>
+										<div class="col-md-10">
 											<input class="form-control" name="product_description[{{ lang.id }}][meta_title]" value="{% if all_descriptions %}{{ all_descriptions[lang.id]['meta_title'] }}{% endif %}" type="text">
 										</div>
 									</div>
 									<div class="form-group">
-										<label class="col-md-3 control-label">{{ _('Meta Description') }}</label>
-										<div class="col-md-9">
+										<label class="col-md-2 control-label">{{ _('Meta Description') }}</label>
+										<div class="col-md-10">
 											<textarea name="product_description[{{ lang.id }}][meta_description]" class="form-control">{% if all_descriptions %}{{ all_descriptions[lang.id]['meta_description'] }}{% endif %}</textarea>
 										</div>
 									</div>
 									<div class="form-group">
-										<label class="col-md-3 control-label">{{ _('Meta keyword') }}</label>
-										<div class="col-md-9">
+										<label class="col-md-2 control-label">{{ _('Meta keyword') }}</label>
+										<div class="col-md-10">
 											<textarea name="product_description[{{ lang.id }}][meta_keyword]" class="form-control">{% if all_descriptions %}{{ all_descriptions[lang.id]['meta_keyword'] }}{% endif %}</textarea>
 										</div>
 									</div>
 									<div class="form-group">
-										<label class="col-md-3 control-label">
+										<label class="col-md-2 control-label">
 											{{ _('Tags') }}
 											<small data-toggle="tooltip" data-original-title="英文逗号分割">
 												<i class="fa fa-question-circle"></i>
 											</small>
 										</label>
-										<div class="col-md-9">
+										<div class="col-md-10">
 											<input class="form-control" name="product_description[{{ lang.id }}][tag]" value="{% if all_descriptions %}{{ all_descriptions[lang.id]['tag'] }}{% endif %}" type="text">
 										</div>
 									</div>
@@ -117,52 +177,173 @@
 
 				<div id="tab-data" class="tab-pane">
 					<div class="row">
-						<div class="col-md-9">
-							<div class="form-group required">
-								{{ form.sku.label(class="col-md-3 control-label") }}
-								<div class="col-md-9">
-									{{ form.sku(class="form-control", readonly="readonly") }}
+						<div class="col-md-10">
+							<div class="form-group">
+								<label class="col-md-2 control-label">{{ _('Category') }}</label>
+								<div class="col-md-6">
+									<select name="category_id_list" multiple class="form-control select2">
+										{% for cate in paginated_categories %}
+										<option value="{{ cate.id }}" {% if cate.id in selected_categories %}selected="selected"{% endif %}>{{ cate.name|safe }}</option>
+										{% endfor %}
+									</select>
+									<span class="help-block">{{ _('Categories support multiple options.') }}</span>
+								</div>
+								<div class="col-md-4">
+									<p class="form-control-static">
+										<a href="{{ url_for('admin.create_category') }}" target="_blank">{{ _('Add Category') }}</a>
+									</p>
+								</div>
+							</div>
+
+							<div class="form-group">
+								{{ form.brand_id.label(class="col-md-2 control-label") }}
+								<div class="col-md-6">
+									{{ form.brand_id(class="form-control select2")}}
+								</div>
+								<div class="col-md-4">
+									<p class="form-control-static">
+										<a href="{{ url_for('admin.create_brand') }}" target="_blank">{{ _('Add Brand') }}</a>
+									</p>
 								</div>
 							</div>
 
 							<div class="form-group required">
-								{{ form.model.label(class="col-md-3 control-label") }}
-								<div class="col-md-9">
-									{{ form.model(class="form-control") }}
+								<label class="col-md-2 control-label">{{ _('Product Images') }}</label>
+								<div class="col-md-10">
+									<div class="upload-box">
+										<button class="btn btn-primary" id="mp-uploader_browse">
+											<i class="fa fa-plus-circle fa-2x"></i>
+										</button>
+										<span class="text-muted">* 图片可以拖拽上传，10Mb以内，JPG／PNG格式，最多20张图片</span>
+									</div>
+									<div id="mp-uploader" class="m-t-20">
+										<p>Your browser doesn't have Flash, Silverlight or HTML5 support.</p>
+									</div>
 								</div>
 							</div>
 
 							<div class="form-group required">
-								{{ form.cover.label(class="col-md-3 control-label") }}
-								<div class="col-md-9">
-									{% if mode == 'create' %}
-									<a href="javascript:void(0);" id="cover_thumb_image" data-target="cover" data-toggle="image" class="img-thumbnail" data-original-title="" aria-describedby="">
-										<img src="{{ url_for('static', filename='images/no_image-100x100.png') }}" width="100px" data-placeholder="{{ url_for('static', filename='images/no_image-100x100.png') }}">
-									</a>
-									{% else %}
-									<a href="javascript:void(0);" id="cover_thumb_image" data-target="cover" data-toggle="image" class="img-thumbnail" data-original-title="" aria-describedby="">
-										<img src="{{ category.cover.view_url|default(url_for('static', filename='images/no_image-100x100.png')) }}" width="100px" data-placeholder="{{ url_for('static', filename='images/no_image-100x100.png') }}">
-									</a>
-									{% endif %}
-
-									{{ form.cover(class="form-control", type="hidden") }}
+								{{ form.price.label(class="col-md-2 control-label") }}
+								<div class="col-md-4">
+									<div class="input-group">
+										{{ form.price(class="form-control") }}
+										<span class="input-group-addon">
+											{{ current_site.default_currency_unit }}
+										</span>
+									</div>
 								</div>
 							</div>
 
 							<div class="form-group required">
-								{{ form.price.label(class="col-md-3 control-label") }}
-								<div class="col-md-9">
-									{{ form.price(class="form-control") }}
-								</div>
-							</div>
-
-							<div class="form-group required">
-								{{ form.quantity.label(class="col-md-3 control-label") }}
-								<div class="col-md-9">
+								{{ form.quantity.label(class="col-md-2 control-label") }}
+								<div class="col-md-4">
 									{{ form.quantity(class="form-control") }}
 								</div>
 							</div>
 
+							<div class="form-group">
+								{{ form.type.label(class="col-md-2 control-label") }}
+								<div class="col-md-4">
+									{{ form.type(class="form-control select2") }}
+								</div>
+
+								{{ form.shipping.label(class="col-md-2 control-label") }}
+								<div class="col-md-4">
+									<label class="radio-inline">
+										<input type="radio" name="shipping" value="1" {% if form.shipping.data == 1 %}checked="checked"{% endif %}> {{ _('Yes') }}
+									</label>
+									<label class="radio-inline">
+										<input type="radio" name="shipping" value="-1" {% if form.shipping.data == -1 %}checked="checked"{% endif %}> {{ _('No') }}
+									</label>
+								</div>
+							</div>
+
+							<div class="form-group">
+								{{ form.status.label(class="col-md-2 control-label") }}
+								<div class="col-md-4">
+									{{ form.status(class="form-control select2") }}
+								</div>
+
+								{{ form.date_available.label(class="col-md-2 control-label") }}
+								<div class="col-md-4">
+									<div class="input-group form-date">
+										<input class="form-control form-datetime" name="date_available" value="{{ form.date_available.data }}" type="text">
+										<span class="input-group-addon b-0">
+											<i class="fa fa-calendar"></i>
+										</span>
+									</div>
+								</div>
+							</div>
+
+						</div>
+						<div class="col-md-3">
+
+						</div>
+					</div>
+
+				</div>
+				{% if mode == 'edit' %}
+				<div id="tab-skus" class="tab-pane">
+					<div class="row">
+						<div class="col-md-12">
+							<a href="{{ url_for('admin.add_sku', pid=product.serial_no) }}" class="btn btn-primary ajax-modal" data-modal="sku-modal" role="button">
+								<i class="fa fa-plus"></i> {{ _('Add SKU') }}
+							</a>
+							<div id="product-skus">
+								<table class="table table-bordered m-t-20">
+									<thead>
+										<tr>
+											<th class="text-center">{{ _('Image') }}</th>
+											<th class="text-center">{{ _('Serial No.') }}</th>
+											<th class="text-center">{{ _('Price') }}</th>
+											<th class="text-center">{{ _('Model') }}</th>
+											<th class="text-center">{{ _('Weight') }}</th>
+											<th>{{ _('Remark') }}</th>
+											<th class="text-right">{{ _('Action') }}</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for sku in product.skus %}
+										<tr id="tr_sku_{{ sku.serial_no }}">
+											<td class="text-center">
+												<img src="{{ sku.cover.view_url }}" width="60px">
+											</td>
+											<td class="text-center">
+												{{ sku.serial_no }}
+											</td>
+											<td class="text-center">
+												{{ sku.sale_price }} {{ current_site.currency }}
+											</td>
+											<td class="text-center">
+												<label class="label label-danger">{{ sku.s_model }}</label>
+											</td>
+											<td class="text-center">
+												{{ sku.s_weight}}
+											</td>
+											<td>
+												{{ sku.remark }}
+											</td>
+											<td class="text-right">
+												<a href="{{ url_for('admin.edit_sku', rid=sku.serial_no) }}" class="btn btn-link ajax-modal" data-modal="sku-modal" data-toggle="tooltip" data-original-title="{{ _('Edit') }}">
+													{{ _('Edit') }}
+												</a>
+												<a href="{{ url_for('admin.delete_sku', rid=sku.serial_no) }}" class="btn ajax-delete-sku btn-link" data-toggle="tooltip" data-original-title="{{ _('Remove') }}">
+													{{ _('Remove') }}
+												</a>
+											</td>
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				{% endif %}
+
+				<div id="tab-optional" class="tab-pane">
+					<div class="row">
+						<div class="col-md-9">
 							<div class="form-group">
 								{{ form.weight.label(class="col-md-3 control-label") }}
 								<div class="col-md-9">
@@ -188,140 +369,108 @@
 							</div>
 
 							<div class="form-group">
-								<label class="col-md-3 control-label">{{ _('Date Available') }}</label>
-								<div class="col-md-4">
-									<div class="input-group">
-										<input class="form-control date" placeholder="yyyy-mm-dd" type="text">
-										<span class="input-group-addon b-0">
-											<i class="fa fa-calendar"></i>
-										</span>
-									</div>
+								{{ form.sort_order.label(class="col-md-3 control-label") }}
+								<div class="col-md-9">
+									{{ form.sort_order(class="form-control") }}
 								</div>
 							</div>
 
-							<button class="btn btn-primary more-options m-t-20" type="button">
-								{{ _('More Options') }} <span class="caret"></span>
-							</button>
-
-							<div class="m-t-20" id="more-options" style="display: none;">
-
-								<div class="form-group">
-									<label class="col-md-3 control-label">{{ _('Require Shipping') }}</label>
-									<div class="col-md-9">
-										<label class="radio-inline">
-											<input type="radio" name="shipping" value="1" checked="checked"> {{ _('Yes') }}
-										</label>
-										<label class="radio-inline">
-											<input type="radio" name="shipping" value="-1" checked="checked"> {{ _('No') }}
-										</label>
-									</div>
+							<div class="form-group">
+								<label class="col-md-3 text-right">
+									{{ form.upc.label(class="control-label") }}
+									<small data-toggle="tooltip" data-original-title="Universal Product Code">
+										<i class="fa fa-question-circle"></i>
+									</small>
+								</label>
+								<div class="col-md-9">
+									{{ form.upc(class="form-control") }}
 								</div>
+							</div>
 
-								<div class="form-group">
-									{{ form.sort_order.label(class="col-md-3 control-label") }}
-									<div class="col-md-9">
-										{{ form.sort_order(class="form-control") }}
-									</div>
+							<div class="form-group">
+								<label class="col-md-3 text-right">
+									{{ form.ean.label(class="control-label") }}
+									<small data-toggle="tooltip" data-original-title="European Article Number">
+										<i class="fa fa-question-circle"></i>
+									</small>
+								</label>
+								<div class="col-md-9">
+									{{ form.upc(class="form-control") }}
 								</div>
+							</div>
 
-								<div class="form-group">
-									<label class="col-md-3 text-right">
-										{{ form.upc.label(class="control-label") }}
-										<small data-toggle="tooltip" data-original-title="Universal Product Code">
-											<i class="fa fa-question-circle"></i>
-										</small>
-									</label>
-									<div class="col-md-9">
-										{{ form.upc(class="form-control") }}
-									</div>
+							<div class="form-group">
+								<label class="col-md-3 text-right">
+									{{ form.jan.label(class="control-label") }}
+									<small data-toggle="tooltip" data-original-title="Japanese Article Number">
+										<i class="fa fa-question-circle"></i>
+									</small>
+								</label>
+								<div class="col-md-9">
+									{{ form.jan(class="form-control") }}
 								</div>
+							</div>
 
-								<div class="form-group">
-									<label class="col-md-3 text-right">
-										{{ form.ean.label(class="control-label") }}
-										<small data-toggle="tooltip" data-original-title="European Article Number">
-											<i class="fa fa-question-circle"></i>
-										</small>
-									</label>
-									<div class="col-md-9">
-										{{ form.upc(class="form-control") }}
-									</div>
+							<div class="form-group">
+								<label class="col-md-3 text-right">
+									{{ form.isbn.label(class="control-label") }}
+									<small data-toggle="tooltip" data-original-title="International Standard Book Number">
+										<i class="fa fa-question-circle"></i>
+									</small>
+								</label>
+								<div class="col-md-9">
+									{{ form.isbn(class="form-control") }}
 								</div>
+							</div>
 
-								<div class="form-group">
-									<label class="col-md-3 text-right">
-										{{ form.jan.label(class="control-label") }}
-										<small data-toggle="tooltip" data-original-title="Japanese Article Number">
-											<i class="fa fa-question-circle"></i>
-										</small>
-									</label>
-									<div class="col-md-9">
-										{{ form.jan(class="form-control") }}
-									</div>
+							<div class="form-group">
+								<label class="col-md-3 text-right">
+									{{ form.mpn.label(class="control-label") }}
+									<small data-toggle="tooltip" data-original-title="Manufacturer Part Number">
+										<i class="fa fa-question-circle"></i>
+									</small>
+								</label>
+								<div class="col-md-9">
+									{{ form.mpn(class="form-control") }}
 								</div>
+							</div>
 
-								<div class="form-group">
-									<label class="col-md-3 text-right">
-										{{ form.isbn.label(class="control-label") }}
-										<small data-toggle="tooltip" data-original-title="International Standard Book Number">
-											<i class="fa fa-question-circle"></i>
-										</small>
-									</label>
-									<div class="col-md-9">
-										{{ form.isbn(class="form-control") }}
-									</div>
+							<div class="form-group">
+								{{ form.location.label(class="col-md-3 control-label") }}
+								<div class="col-md-9">
+									{{ form.location(class="form-control") }}
 								</div>
+							</div>
 
-								<div class="form-group">
-									<label class="col-md-3 text-right">
-										{{ form.mpn.label(class="control-label") }}
-										<small data-toggle="tooltip" data-original-title="Manufacturer Part Number">
-											<i class="fa fa-question-circle"></i>
-										</small>
-									</label>
-									<div class="col-md-9">
-										{{ form.mpn(class="form-control") }}
-									</div>
+							<div class="form-group">
+								<div class="col-md-3 text-right">
+									{{ form.mini_cnt.label(class="control-label") }}
+									<small data-toggle="tooltip" data-original-title="Force a minimum ordered amount">
+										<i class="fa fa-question-circle"></i>
+									</small>
 								</div>
-
-								<div class="form-group">
-									{{ form.location.label(class="col-md-3 control-label") }}
-									<div class="col-md-9">
-										{{ form.location(class="form-control") }}
-									</div>
+								<div class="col-md-9">
+									{{ form.mini_cnt(class="form-control") }}
 								</div>
+							</div>
 
-								<div class="form-group">
-									<div class="col-md-3 text-right">
-										{{ form.mini_cnt.label(class="control-label") }}
-										<small data-toggle="tooltip" data-original-title="Force a minimum ordered amount">
-											<i class="fa fa-question-circle"></i>
-										</small>
-									</div>
-									<div class="col-md-9">
-										{{ form.mini_cnt(class="form-control") }}
-									</div>
+							<div class="form-group">
+								<label class="col-md-3 control-label">{{ _('Subtract Stock') }}</label>
+								<div class="col-md-9">
+									<input class="form-control" name="subtract" type="text">
 								</div>
+							</div>
 
-								<div class="form-group">
-									<label class="col-md-3 control-label">{{ _('Subtract Stock') }}</label>
-									<div class="col-md-9">
-										<input class="form-control" name="subtract" type="text">
-									</div>
+							<div class="form-group">
+								<label class="col-md-3 control-label">
+									{{ _('Out Of Stock Status') }}
+									<small data-toggle="tooltip" data-original-title="Stock Keeping Unit">
+										<i class="fa fa-question-circle"></i>
+									</small>
+								</label>
+								<div class="col-md-9">
+									<input class="form-control" name="stock_status_id"  type="text">
 								</div>
-
-								<div class="form-group">
-									<label class="col-md-3 control-label">
-										{{ _('Out Of Stock Status') }}
-										<small data-toggle="tooltip" data-original-title="Stock Keeping Unit">
-											<i class="fa fa-question-circle"></i>
-										</small>
-									</label>
-									<div class="col-md-9">
-										<input class="form-control" name="stock_status_id"  type="text">
-									</div>
-								</div>
-
 							</div>
 
 
@@ -337,13 +486,4 @@
 		</form>
 	</div>
 </div>
-
-{% if is_pjax %}
-	<script type="text/javascript">
-		mic.hook_tooltip_toggle();
-		mic.hook_select2();
-		mic.hook_summer_editor();
-	</script>
-{% endif %}
-
 {% endblock %}

@@ -33,3 +33,19 @@ BRAND_STATUS = (
     (1, lazy_gettext('Enabled'), 'success'),
     (-1, lazy_gettext('Disabled'), 'danger')
 )
+
+
+# 产品类型
+PRODUCT_TYPE = (
+    (1, lazy_gettext('Item')),
+    (2, lazy_gettext('Free Product')),
+    (3, lazy_gettext('Gift Card')),
+    (4, lazy_gettext('Software')),
+    (5, lazy_gettext('Key'))
+)
+
+# 产品状态
+PRODUCT_STATUS = (
+    (1, lazy_gettext('Pending Sale'), 'danger'),
+    (2, lazy_gettext('In Sale'), 'success')
+)

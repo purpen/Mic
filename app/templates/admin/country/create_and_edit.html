@@ -1,4 +1,4 @@
-{% extends "layout/admin.html" %}
+{% extends pjax("layout/admin.html") %}
 
 {% block page_content %}
 <div class="form-page">
@@ -12,86 +12,104 @@
 		</span>
 
 		<div class="pull-right m-t-10">
-			<button type="submit" form="form-country" class="btn btn-icon btn-primary waves-effect waves-light" data-toggle="tooltip" data-original-title="{{ _('Save') }}">
+			<button type="submit" form="form-country" class="btn btn-icon btn-primary" data-toggle="tooltip" data-original-title="{{ _('Save') }}">
 				<i class="fa fa-save"></i>
 			</button>
-			<a href="{{ url_for('admin.show_countries') }}" class="btn btn-icon btn-default waves-effect waves-light" data-toggle="tooltip" data-original-title="{{ _('Cancel') }}">
+			<a href="{{ url_for('admin.show_countries') }}" class="btn btn-icon btn-default pjax" data-toggle="tooltip" data-original-title="{{ _('Cancel') }}">
 				<i class="fa fa-reply"></i>
 			</a>
 		</div>
 	</div>
 
 	<div class="card-box">
-		<form class="form-horizontal" role="form" method="post" id="form-country" action="">
-			{{ form.hidden_tag() }}
+		<div class="row">
+			<div class="col-md-9">
+				<form class="form-horizontal" role="form" method="post" id="form-country" action="">
+					{{ form.hidden_tag() }}
 
-			<div class="form-group required {% if form.errors.name %} has-error{% endif %}">
-				<label class="col-md-2 control-label">{{ form.name.label }}</label>
-				<div class="col-md-8">
-					{{ form.name(maxlength=64, class='form-control') }}
-					{% for error in form.errors.name %}
-					<span class="help-block">{{ error }}</span><br>
-					{% endfor %}
-				</div>
-			</div>
+					<div class="form-group required {% if form.errors.name %} has-error{% endif %}">
+						{{ form.name.label(class="col-md-3 control-label") }}
+						<div class="col-md-9">
+							{{ form.name(maxlength=64, class='form-control') }}
 
-			<div class="form-group {% if form.errors.iso_code_2 %} has-error{% endif %}">
-				<label class="col-md-2 control-label">
-					{{ form.iso_code_2.label }}
-				</label>
-				<div class="col-md-8">
-					{{ form.iso_code_2(class='form-control') }}
-					{% for error in form.errors.iso_code_2 %}
-					<span class="help-block">{{ error }}</span><br>
-					{% endfor %}
-				</div>
-			</div>
-
-			<div class="form-group {% if form.errors.iso_code_3 %} has-error{% endif %}">
-				<label class="col-md-2 control-label">
-					{{ form.iso_code_3.label }}
-				</label>
-				<div class="col-md-8">
-					{{ form.iso_code_3(class='form-control') }}
-					{% for error in form.errors.iso_code_3 %}
-					<span class="help-block">{{ error }}</span><br>
-					{% endfor %}
-				</div>
-			</div>
-
-			<div class="form-group">
-				<label class="col-md-2 control-label">
-					{{ form.address_format.label }} <small data-toggle="tooltip" data-original-title="姓名 = {fullname}<br />公司 = {company}<br />地址 = {address}<br />城市 = {city}<br />邮政编码 = {postcode}<br />州/省/地区 = {zone}<br />地区编码 = {zone_code}<br />国家 = {country}"><i class="fa fa-question-circle"></i></small>
-				</label>
-				<div class="col-md-8">
-					{{ form.address_format(class='form-control') }}
-				</div>
-			</div>
-
-			<div class="form-group">
-				<label class="col-md-2 control-label">{{ form.postcode_required.label }}</label>
-				<div class="col-md-5">
-					<div class="radio radio-custom radio-inline">
-						<input id="postcode_required-0" name="postcode_required" value="True" {% if form.postcode_required.data %}checked="checked"{% endif %} type="radio">
-						<label for="postcode_required-0">Yes</label>
+							{% for error in form.errors.name %}
+							<span class="help-block">{{ error }}</span><br>
+							{% endfor %}
+						</div>
 					</div>
 
-					<div class="radio radio-custom radio-inline">
-						<input id="postcode_required-1" name="postcode_required" value="False" {% if not form.postcode_required.data %}checked="checked"{% endif %} type="radio">
-						<label for="postcode_required-1">No</label>
+					<div class="form-group {% if form.errors.iso_code_2 %} has-error{% endif %}">
+						{{ form.iso_code_2.label(class="col-md-3 control-label") }}
+						<div class="col-md-9">
+							{{ form.iso_code_2(class='form-control') }}
+							{% for error in form.errors.iso_code_2 %}
+							<span class="help-block">{{ error }}</span><br>
+							{% endfor %}
+						</div>
 					</div>
-				</div>
-			</div>
 
-			<div class="form-group">
-				<label class="col-md-2 control-label">
-					{{ form.status.label }} <small data-toggle="tooltip" data-original-title="在国家下拉项中隐藏/显示"><i class="fa fa-question-circle"></i></small>
-				</label>
-				<div class="col-md-5">
-					{{ form.status(class='form-control select2') }}
-				</div>
+					<div class="form-group {% if form.errors.iso_code_3 %} has-error{% endif %}">
+						{{ form.iso_code_3.label(class="col-md-3 control-label") }}
+						<div class="col-md-9">
+							{{ form.iso_code_3(class='form-control') }}
+
+							{% for error in form.errors.iso_code_3 %}
+							<span class="help-block">{{ error }}</span><br>
+							{% endfor %}
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-md-3 text-right">
+							{{ form.address_format.label(class="control-label") }}
+							<small data-toggle="tooltip" data-original-title="姓名 = {fullname}<br />公司 = {company}<br />地址 = {address}<br />城市 = {city}<br />邮政编码 = {postcode}<br />州/省/地区 = {zone}<br />地区编码 = {zone_code}<br />国家 = {country}">
+								<i class="fa fa-question-circle"></i>
+							</small>
+						</div>
+						<div class="col-md-9">
+							{{ form.address_format(class='form-control', rows=5) }}
+						</div>
+					</div>
+
+					<div class="form-group">
+						{{ form.postcode_required.label(class="col-md-3 control-label") }}
+						<div class="col-md-9">
+							<div class="radio radio-inline">
+								<label for="postcode_required-0">
+									<input id="postcode_required-0" name="postcode_required" value="True" {% if form.postcode_required.data %}checked="checked"{% endif %} type="radio"> Yes
+								</label>
+							</div>
+
+							<div class="radio radio-inline">
+								<label for="postcode_required-1">
+									<input id="postcode_required-1" name="postcode_required" value="False" {% if not form.postcode_required.data %}checked="checked"{% endif %} type="radio"> No
+								</label>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-md-3 text-right">
+							{{ form.status.label(class="control-label") }}
+							<small data-toggle="tooltip" data-original-title="在国家下拉项中隐藏/显示">
+								<i class="fa fa-question-circle"></i>
+							</small>
+						</div>
+						<div class="col-md-9">
+							{{ form.status(class='form-control select2') }}
+						</div>
+					</div>
+				</form>
 			</div>
-		</form>
+		</div>
 	</div>
 </div>
+
+{% if is_pjax %}
+	<script type="text/javascript">
+		mic.hook_tooltip_toggle();
+		mic.hook_select2();
+	</script>
+{% endif %}
+
 {% endblock %}

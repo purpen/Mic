@@ -260,3 +260,45 @@
 .video-dialog .modal-body {
     padding: 30px;
 }
+
+.plupload_filelist li {
+    border: 1px solid #ccc;
+    display: inline-block;
+    height: 100px;
+    margin-right: 10px;
+    margin-top: 10px;
+    width: 100px;
+    overflow: hidden;
+}
+.plupload_filelist li.plupload_droptext {
+    border: medium none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+.plupload_filelist li a.thumbnail {
+    display: flex;
+    flex-direction: column;
+    height: 100px;
+    justify-content: center;
+    margin-bottom: 0;
+    width: 100px;
+}
+.plupload_file_status {
+    color: #98d85b;
+    display: block;
+    font-size: 24px;
+    margin: 30px auto 0;
+    text-align: center;
+    width: 50px;
+}
+.plupload_file_status small {
+    font-size: 60%;
+}
+
+#mp-uploader .plupload_scroll .plupload_filelist {
+    height: auto;
+}
+.btn-link {
+    padding-right: 0;
+}

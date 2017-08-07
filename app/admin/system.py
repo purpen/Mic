@@ -2,13 +2,11 @@
 from flask import render_template, redirect, url_for, flash, request, abort, current_app
 from flask_login import login_required, current_user
 from flask_babelex import gettext
-
 from .forms import LanguageForm, EditLanguageForm, CountryForm, EditCountryForm, CurrencyForm, SiteForm
 from app.models import Language, Country, Currency, LengthClass, LengthClassDescription, WeightClass, \
     WeightClassDescription, Site, Counter, User
 
 from .. import db
-from ..utils import Master, gen_serial_no
 from . import admin
 
 
@@ -207,6 +205,7 @@ def delete_currency():
 
 @admin.route('/countries')
 @admin.route('/countries/<int:page>')
+@login_required
 def show_countries(page=1):
     per_page = request.args.get('per_page', 10, type=int)
 
@@ -221,37 +220,40 @@ def show_countries(page=1):
 
 
 @admin.route('/countries/create', methods=['GET', 'POST'])
+@login_required
 def create_country():
     form = CountryForm()
     if form.validate_on_submit():
-        country = Country(
-            name=form.name.data,
-            iso_code_2=form.iso_code_2.data,
-            iso_code_3=form.iso_code_3.data,
-            address_format=form.address_format.data,
-            postcode_required=form.postcode_required.data,
-            status=form.status.data
-        )
         try:
+            country = Country(
+                name=form.name.data,
+                iso_code_2=form.iso_code_2.data,
+                iso_code_3=form.iso_code_3.data,
+                address_format=form.address_format.data,
+                postcode_required=form.postcode_required.data,
+                status=form.status.data
+            )
             db.session.add(country)
+
             db.session.commit()
-        except:
+        except Exception as ex:
             db.session.rollback()
-            flash('Add Country is fail!' , 'danger')
+            flash(gettext('Add Country is fail: %s!' % ex) , 'danger')
+
             return redirect(url_for('.create_country'))
 
-        flash('Add country is ok!', 'success')
+        flash(gettext('Add country is ok!'), 'success')
 
         return redirect(url_for('.show_countries'))
 
     mode = 'create'
     return render_template('admin/country/create_and_edit.html',
                            form=form,
-                           mode=mode
-                           )
+                           mode=mode)
 
 
 @admin.route('/countries/<int:id>/edit', methods=['GET', 'POST'])
+@login_required
 def edit_country(id):
     country = Country.query.get_or_404(id)
     form = EditCountryForm(country)
@@ -259,10 +261,11 @@ def edit_country(id):
         form.populate_obj(country)
         db.session.commit()
 
-        flash('Edit country is ok!', 'success')
+        flash(gettext('Edit country is ok!'), 'success')
         return redirect(url_for('.show_countries'))
 
     mode = 'edit'
+
     # populate data for form
     form.name.data = country.name
     form.iso_code_2.data = country.iso_code_2
@@ -277,22 +280,24 @@ def edit_country(id):
                            mode=mode)
 
 
-@admin.route('/countries/delete', methods=['GET', 'POST'])
+@admin.route('/countries/delete', methods=['POST'])
+@login_required
 def delete_country():
     selected_ids = request.form.getlist('selected[]')
     if not selected_ids or selected_ids is None:
-        flash('Delete country is null!', 'danger')
+        flash(gettext('Delete country is null!'), 'danger')
         abort(404)
 
     try:
         for id in selected_ids:
             country = Country.query.get_or_404(int(id))
             db.session.delete(country)
-            db.session.commit()
 
-        flash('Delete country is ok!', 'success')
+        db.session.commit()
+
+        flash(gettext('Delete country is ok!'), 'success')
     except:
         db.session.rollback()
-        flash('Delete country is error!!!', 'danger')
+        flash(gettext('Delete country is error!!!'), 'danger')
 
     return redirect(url_for('.show_countries'))

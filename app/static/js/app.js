@@ -78,6 +78,26 @@ mic.hook_delete_all = function () {
 	});
 };
 
+mic.hook_form_datetime = function (default_language) {
+	default_language = default_language || 'en';
+	$(".form-datetime").datetimepicker({
+		minView: "month",
+		language: default_language,
+		format: "yyyy-mm-dd",
+		icons: {
+			time: 'fa fa-time',
+			date: 'fa fa-calendar',
+			up: 'fa fa-chevron-up',
+			down: 'fa fa-chevron-down'
+		},
+		autoclose: true,
+		todayBtn: true
+	});
+
+	$('.form-date span.input-group-addon').click(function () {
+		$(this).prev('.form-datetime').focus();
+	});
+};
 
 mic.checked_items_status = function () {
 	var total_count = 0;
@@ -188,6 +208,21 @@ mic.hook_select2 = function () {
 	});
 };
 
+mic.hook_product_more_options = function () {
+	$('.btn.more-options').click(function () {
+		var $this = $(this);
+		if ($this.hasClass('dropup')) {
+			$('#more-options').slideUp('normal', function () {
+				$this.removeClass('dropup');
+			});
+		} else {
+			$('#more-options').slideDown('normal', function () {
+				$this.addClass('dropup');
+			});
+		}
+	});
+};
+
 mic.hook_summer_editor = function () {
 	// Override summernotes image manager
 	$('.summernote').each(function() {
@@ -255,14 +290,29 @@ mic.hook_summer_editor = function () {
 	});
 };
 
+mic.hook_ajax_modal = function() {
+	// 自动绑定ajax的链接
+	$('a.ajax-modal').click(function () {
+		var url = $(this).attr('href'), modal_name = $(this).data('modal');
+		$.get(url, function (html) {
+			$('body').append('<div id="'+ modal_name +'" role="dialog" class="modal">' + html + '</div>');
+
+			$('#'+ modal_name).modal('show');
+		});
+		return false;
+	});
+};
+
 $(function () {
+
+	Waves.attach('.btn', ['waves-light']);
+	Waves.init();
+
 	mic.hook_tooltip_toggle();
 
 	mic.hook_select2();
 
-	$('.date').datetimepicker({
-		pickTime: false
-	});
+	mic.hook_ajax_modal();
 
 	$('.alert-dismissable').fadeTo(2000, 500).fadeOut(500, function(){
 		$('.alert-dismissable').alert('close');

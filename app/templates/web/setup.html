@@ -44,15 +44,15 @@
 
 	<div class="extra-info">
 		<div class="col-sm-4 none-padding">
-			<div class="dropdown clearfix">
+			<div class="dropup clearfix">
 				<button class="btn btn-flat-default dropdown-toggle" type="button" id="dropdown-languages" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 					{{ _('Select Languages') }}
 					<span class="caret"></span>
 				</button>
 				<ul class="dropdown-menu" aria-labelledby="dropdown-languages">
 					{% for lang in support_languages %}
-					<li {% if g.locale == lang[1] %}class="active"{% endif %}>
-						<a href="/{{ lang[1] }}">{{ lang[2] }}</a>
+					<li {% if g.locale == lang.code %}class="active"{% endif %}>
+						<a href="/{{ lang.code }}">{{ lang.name }}</a>
 					</li>
 					{% endfor %}
 				</ul>

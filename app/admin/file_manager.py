@@ -101,8 +101,13 @@ def show_asset(page=1):
 
 @admin.route('/file_manager/get_asset/<int:id>')
 def get_asset(id):
+    fid = request.args.get('fid')
+
     asset = Asset.query.get_or_404(id)
-    return jsonify(asset.to_json())
+    asset_result = asset.to_json()
+    asset_result['fid'] = fid
+
+    return jsonify(asset_result)
 
 
 @admin.route('/file_manager/view_asset/<int:id>')

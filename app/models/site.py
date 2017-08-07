@@ -3,11 +3,19 @@ from sqlalchemy import text, event
 from sqlalchemy.sql import func
 from app import db
 from app.utils import timestamp
+from .settings import Language, Currency
 
 __all__ = [
     'Site',
     'SiteSeo'
 ]
+
+# site and country => N to N
+site_country_table = db.Table(
+    'fp_site_country',
+    db.Column('site_id', db.Integer, db.ForeignKey('fp_site.id')),
+    db.Column('country_id', db.Integer, db.ForeignKey('fp_country.id'))
+)
 
 # site and language => N to N
 site_language_table = db.Table(
@@ -23,9 +31,9 @@ site_currency_table = db.Table(
     db.Column('currency_id', db.Integer, db.ForeignKey('fp_currency.id'))
 )
 
+
 class Site(db.Model):
     """官网信息"""
-
     __tablename__ = 'fp_site'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -41,15 +49,15 @@ class Site(db.Model):
     # 套餐标准，1、免费版 2、vip版本 3、定制版
     pricing = db.Column(db.SmallInteger, default=1)
 
-    # 默认值，语言、国家、币种
-    locale = db.Column(db.String(4), default='zh')
-    country = db.Column(db.String(30), nullable=True)
-    currency = db.Column(db.String(10), default='CNY')
-
     # 行业范围
     domain = db.Column(db.SmallInteger, default=1)
     copyright = db.Column(db.String(100), nullable=True)
     description = db.Column(db.Text)
+
+    # 默认值，语言、国家、币种
+    default_country = db.Column(db.Integer, default=0)
+    default_language = db.Column(db.Integer, default=0)
+    default_currency = db.Column(db.Integer, default=0)
 
     # 合作伙伴代码
     unicode = db.Column(db.String(64), nullable=True)
@@ -59,6 +67,11 @@ class Site(db.Model):
 
     created_at = db.Column(db.Integer, default=timestamp)
     update_at = db.Column(db.Integer, default=timestamp, onupdate=timestamp)
+
+    # site => country, N => N
+    countries = db.relationship(
+        'Country', secondary=site_country_table, backref='sites'
+    )
 
     # site => language, N => N
     languages = db.relationship(
@@ -85,22 +98,55 @@ class Site(db.Model):
         'Product', backref='site', lazy='dynamic'
     )
 
-    def add_languages(self, *languages):
-        """追加语言选项"""
-        self.languages.extend([lang for lang in languages if lang not in self.languages])
 
-    def update_languages(self, *languages):
+    @property
+    def default_currency_unit(self):
+        currency = Currency.query.get(int(self.default_currency))
+        return currency.code
+
+
+    def update_languages(self, languages):
         """更新语言选项"""
+
+        # 检测默认语言是否选中，如未选择，则自动添加
+        default_language = Language.query.get(int(self.default_language))
+        if default_language not in languages:
+            languages.append(default_language)
+
         self.languages = [lang for lang in languages]
 
-    def remove_languages(self, *languages):
-        """删除语言选项"""
-        self.languages = [lang for lang in self.languages if lang not in languages]
 
+    def update_currencies(self, currencies):
+        """更新支持的货币"""
 
-    def update_currencies(self, *currencies):
-        """更新货币单位"""
+        # 检测默认货币是否选中，如未选择，则自动添加
+        default_currency = Currency.query.get(int(self.default_currency))
+        if default_currency not in currencies:
+            currencies.append(default_currency)
+
         self.currencies = [currency for currency in currencies]
+
+
+    def update_countries(self, countries):
+        """更新支持的国家"""
+        self.countries = [country for country in countries]
+
+
+    @property
+    def support_languages(self):
+        """官网支持的语言, 默认语言设置为第一个"""
+        support_languages =[]
+        default_language = None
+        for lang in self.languages:
+            if lang.id == self.default_language:
+                default_language = lang
+            else:
+                support_languages.append(lang)
+
+        # 默认语言添加至第一个
+        support_languages.insert(0, default_language)
+
+        return support_languages
 
 
     @staticmethod
@@ -111,6 +157,15 @@ class Site(db.Model):
         # 如不是主账号
         master_user = User.query.get(user.master_uid)
         return master_user.site_id if master_user else 0
+
+    @staticmethod
+    def current_site(master_uid=0, site_id=0):
+        """获取当前官网"""
+        if site_id:
+            return Site.query.get(int(site_id))
+
+        if master_uid:
+            return Site.query.filter_by(master_uid=master_uid).first()
 
     @staticmethod
     def make_unique_serial_no():

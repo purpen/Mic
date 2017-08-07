@@ -18,6 +18,9 @@ class SiteForm(Form):
     status = SelectField(lazy_gettext('Site Status'), choices=[
         (1, lazy_gettext('Enabled')), (-1, lazy_gettext('Disabled'))
     ], coerce=int)
+    default_country = SelectField(lazy_gettext('Country'), choices=[], coerce=int)
+    default_language = SelectField(lazy_gettext('Default Language'), choices=[], coerce=int)
+    default_currency = SelectField(lazy_gettext('Default Currency'), choices=[], coerce=int)
 
 
 class LanguageForm(Form):

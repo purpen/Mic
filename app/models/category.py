@@ -4,22 +4,17 @@ from datetime import datetime
 from .asset import Asset
 from app import db
 
-
 # product and tag => N to N
 product_tag_table = db.Table('fp_product_tag',
-                           db.Column(
-                               'product_id', db.Integer, db.ForeignKey('fp_product.id')),
-                           db.Column(
-                               'tag_id', db.Integer, db.ForeignKey('fp_tag.id'))
-                           )
+    db.Column('product_id', db.Integer, db.ForeignKey('fp_product.id')),
+    db.Column('tag_id', db.Integer, db.ForeignKey('fp_tag.id'))
+)
 
 # product and category => N to N
 product_category_table = db.Table('fp_product_category',
-                                  db.Column(
-                                      'product_id', db.Integer, db.ForeignKey('fp_product.id')),
-                                  db.Column(
-                                      'category_id', db.Integer, db.ForeignKey('fp_category.id'))
-                                  )
+    db.Column('product_id', db.Integer, db.ForeignKey('fp_product.id')),
+    db.Column('category_id', db.Integer, db.ForeignKey('fp_category.id'))
+)
 
 class Category(db.Model):
     __tablename__ = 'fp_category'

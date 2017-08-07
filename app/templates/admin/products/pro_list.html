@@ -7,7 +7,22 @@
 
 		<div class="pull-right m-t-10">
 			{% include 'block/_select_items.html' %}
-			<a href="{{ url_for('admin.create_product') }}" class="btn btn-icon btn-primary pjax" data-toggle="tooltip" data-original-title="{{ _('Add New') }}">
+			<div class="btn-group">
+				<button class="btn btn-default dropdown-toggle" type="button" id="storage-actions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					{{ _('Actions') }}
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="storage-actions">
+					<li><a href="#" class="ajax-modal" data-modal="in-stock-modal">{{ _('Print') }}</a></li>
+					<li class="divider" role="separator"></li>
+					<li>
+						<a href="#" class="ajax-modal" data-modal="in-stock-modal">
+							{{ _('Export Stock') }}
+						</a>
+					</li>
+				</ul>
+			</div>
+			<a href="{{ url_for('admin.create_product') }}" class="btn btn-icon btn-primary" data-toggle="tooltip" data-original-title="{{ _('Add New') }}">
 				<i class="fa fa-plus"></i>
 			</a>
 			<button type="button" data-form-id="form-products" class="btn btn-icon btn-danger delete-all hidden" data-toggle="tooltip" data-original-title="{{ _('Delete') }}">
@@ -15,7 +30,40 @@
 			</button>
 		</div>
 	</div>
-	<div class="card-box table-responsive">
+
+	<form class="form-inline filter-form" method="post">
+		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" >
+
+		<div class="form-group">
+			<input type="text" class="form-control searcher" name="qk" size="60" placeholder="{{ _('Search products sku or name...') }}">
+		</div>
+
+		<div class="form-group pull-right">
+			<div class="dropdown">
+				<input type="hidden" name="sk" value="{{ sk|default('ad') }}">
+				<button class="btn btn-flat-default dropdown-toggle" type="button" id="filter-sort" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					<i class="glyphicon glyphicon-sort-by-attributes-alt"></i> {{ _('Sort') }}: <b>{{ _('Add Date') }}</b>
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu dropdown-menu-right dropdown-select-menu" data-target="sk" aria-labelledby="filter-sort">
+					<li class="dropdown-header">{{ _('Sort Order')}}</li>
+					<li class="divider" role="separator"></li>
+					<li>
+						<a href="javascript:void(0);" data-id="ad" class="option">{{ _('Default') }}</a>
+					</li>
+					<li>
+						<a href="javascript:void(0);" data-id="ad" class="option">{{ _('Add Date') }}</a>
+					</li>
+					<li>
+						<a href="javascript:void(0);" data-id="ud" class="option">{{ _('Update Date') }}</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+	</form>
+
+	<div class="card-box m-t-20 table-responsive">
 		<form id="form-products" action="{{ url_for('admin.delete_product') }}" method="post">
 			<table class="table table-bordered table-hover" role="grid">
 				<thead>
@@ -24,31 +72,36 @@
 							<input name="check_all" type="checkbox" class="check-all">
 						</th>
 						<th class="text-center">{{ _('Image') }}</th>
-						<th>{{ _('Product Name') }}</th>
-						<th class="text-center">{{ _('Model') }}</th>
+						<th>{{ _('Product Info') }}</th>
+						<th class="text-center">{{ _('Sku Info') }}</th>
 						<th class="text-center">{{ _('Quantity') }}</th>
-						<th class="text-right">{{ _('Price') }}</th>
+						<th class="text-right">{{ _('Price') }} ({{ current_site.default_currency_unit }})</th>
 						<th class="text-right">{{ _('Status') }}</th>
 						<th class="text-right">{{ _('Action') }}</th>
 					</tr>
 				</thead>
 
 				<tbody>
-					{% for lang in paginated_products.items %}
+					{% for product in paginated_products.items %}
 					<tr role="row">
 						<td class="text-center">
-							<input name="selected[]" class="check-one" value="{{ lang.id }}" type="checkbox">
+							<input name="selected[]" class="check-one" value="{{ product.id }}" type="checkbox">
 						</td>
 						<td class="text-center">
-							<img src="{{ lang.icon.view_url }}" width="60px">
+							<img src="{{ product.cover.view_url }}" width="60px">
 						</td>
-						<td>{{ lang.name }}</td>
-						<td class="text-center">{{ lang.code }}</td>
-						<td class="text-center">{{ lang.name }}</td>
-						<td class="text-right">{{ lang.code }}</td>
-						<td class="text-right">{{ lang.sort_order }}</td>
+						<td>
+							{{ product.default_description(current_site.default_language).name }} <br>
+							<strong class="text-danger">ID: {{ product.serial_no }}</strong>
+						</td>
+						<td class="text-center">{{ product.model }}</td>
+						<td class="text-center">{{ product.quantity }}</td>
+						<td class="text-right">{{ product.price|round(precision=2) }}</td>
 						<td class="text-right">
-							<a href="{{ url_for('admin.edit_language', id=lang.id) }}" class="btn btn-link" data-toggle="tooltip" data-original-title="{{ _('Edit') }}">
+							<span class="indicator {{ product.status_label[2] }}">{{ product.status_label[1] }}</span>
+						</td>
+						<td class="text-right">
+							<a href="{{ url_for('admin.edit_product', rid=product.sku) }}" class="btn btn-link" data-toggle="tooltip" data-original-title="{{ _('Edit') }}">
 								{{ _('Edit') }}
 							</a>
 						</td>

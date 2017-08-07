@@ -28,8 +28,10 @@ type="image/x-icon">
 	<link href="{{ url_for('static', filename='css/nprogress.css', _external=True) }}" rel="stylesheet" type="text/css">
 	<link href="{{ url_for('static', filename='css/jquery.plupload.queue.css', _external=True) }}" rel="stylesheet" type="text/css">
 	<link href="{{ url_for('static', filename='css/select2.css', _external=True) }}" rel="stylesheet" type="text/css">
+	<link href="{{ url_for('static', filename='css/bootstrap-datetimepicker.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ url_for('static', filename='css/sweet-alert.css', _external=True) }}" rel="stylesheet" type="text/css">
 	<link href="{{ url_for('static', filename='css/summernote.css', _external=True) }}" rel="stylesheet" type="text/css">
+	<link href="{{ url_for('static', filename='css/waves.css', _external=True) }}" rel="stylesheet" type="text/css">
 	<link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet" type="text/css">
     {%- endblock styles %}
 
@@ -55,7 +57,7 @@ type="image/x-icon">
 				<ul class="nav navbar-nav navbar-right">
 					<li>
 						<a href="#">
-							<span class="badge badge-danger">{{ _('Free Vision') }}</span>
+							<span class="badge badge-danger">{{ _('Free Version') }}</span>
 						</a>
 					</li>
 					<li>
@@ -144,13 +146,13 @@ type="image/x-icon">
 					<li>
 						<ul class="children">
 							<li>
-								<a href="#">{{ _('Orders') }}</a>
+								<a href="#">{{ _('Order List') }}</a>
 							</li>
 							<li>
-								<a href="#">{{ _('Returns') }}</a>
+								<a href="#">{{ _('Return List') }}</a>
 							</li>
 							<li>
-								<a href="#">{{ _('Customers') }}</a>
+								<a href="#">{{ _('Customer List') }}</a>
 							</li>
 						</ul>
 					</li>
@@ -165,7 +167,7 @@ type="image/x-icon">
 								<a href="{{ url_for('admin.site') }}" class="pjax nav-pjax">{{ _('Site Manage') }}</a>
 							</li>
 							<li>
-								<a href="#">{{ _('Child Users') }}</a>
+								<a href="#">{{ _('Child Account') }}</a>
 							</li>
 							<li>
 								<a href="{{ url_for('admin.show_uploads') }}">{{ _('Uploads') }}</a>
@@ -237,21 +239,6 @@ type="image/x-icon">
 						</ul>
 					</li>
 				</ul>
-				<ul class="nav nav-sidebar">
-					<li class="nav-header">
-						<i class="fa fa-wrench"></i> <span class="m-l-5"> {{ _('Tools')}} </span>
-					</li>
-					<li>
-						<ul class="children">
-							<li>
-								<a href="#" class="disabled">{{ _('Backup / Restore') }}</a>
-							</li>
-							<li>
-								<a href="#" class="disabled">{{ _('Error Logs') }}</a>
-							</li>
-						</ul>
-					</li>
-				</ul>
 
 				<ul class="nav nav-sidebar">
 					<li class="nav-header">
@@ -260,13 +247,13 @@ type="image/x-icon">
 					<li>
 						<ul class="children">
 							<li>
-								<a href="{{ url_for('admin.show_languages') }}" class="pjax nav-pjax">{{ _('Languages') }}</a>
+								<a href="{{ url_for('admin.show_languages') }}" class="pjax nav-pjax">{{ _('Language List') }}</a>
 							</li>
 							<li>
-								<a href="{{ url_for('admin.show_currencies') }}" class="pjax nav-pjax">{{ _('Currencies') }}</a>
+								<a href="{{ url_for('admin.show_currencies') }}" class="pjax nav-pjax">{{ _('Currency List') }}</a>
 							</li>
 							<li>
-								<a href="{{ url_for('admin.show_countries') }}" class="pjax nav-pjax">{{ _('Countries') }}</a>
+								<a href="{{ url_for('admin.show_countries') }}" class="pjax nav-pjax">{{ _('Country List') }}</a>
 							</li>
 						</ul>
 					</li>
@@ -315,14 +302,15 @@ type="image/x-icon">
 	<script src="{{ url_for('static', filename='js/jquery.pjax.js', _external=True) }}" type="text/javascript"></script>
 	<script src="{{ url_for('static', filename='js/nprogress.js', _external=True) }}" type="text/javascript"></script>
 	<script src="{{ url_for('static', filename='js/moment.js', _external=True) }}" type="text/javascript"></script>
-	<script src="{{ url_for('static', filename='js/bootstrap-datetimepicker.min.js', _external=True) }}" type="text/javascript"></script>
+	<script src="{{ url_for('static', filename='js/bootstrap-datetimepicker.js') }}" type="text/javascript"></script>
 	<script src="{{ url_for('static', filename='js/jquery.cookie.js', _external=True) }}" type="text/javascript"></script>
 	<script src="{{ url_for('static', filename='js/plupload.full.min.js', _external=True) }}" type="text/javascript"></script>
 	<script src="{{ url_for('static', filename='js/jquery.plupload.queue.js') }}" type="text/javascript"></script>
-	<script src="{{ url_for('static', filename='js/select2.js', _external=True) }}" type="text/javascript"></script>
-	<script src="{{ url_for('static', filename='js/sweet-alert.min.js', _external=True) }}" type="text/javascript"></script>
+	<script src="{{ url_for('static', filename='js/select2.js') }}" type="text/javascript"></script>
+	<script src="{{ url_for('static', filename='js/sweet-alert.min.js') }}" type="text/javascript"></script>
 	<script src="{{ url_for('static', filename='js/i18n/zh_CN.js', _external=True) }}" type="text/javascript"></script>
 	<script src="{{ url_for('static', filename='js/summernote.js', _external=True) }}" type="text/javascript"></script>
+	<script src="{{ url_for('static', filename='js/waves.js', _external=True) }}" type="text/javascript"></script>
     {%- endblock scripts %}
 
 	{% block private_scripts %}
@@ -332,6 +320,9 @@ type="image/x-icon">
 	<script type="text/javascript">
 		// 打开页面时加载进度条。
 		NProgress.start();
+
+		{% block before_scripts %}
+		{%- endblock before_scripts%}
 
 		jQuery(document).ready(function(){
 
@@ -343,18 +334,6 @@ type="image/x-icon">
 
 			mic.hook_check_all();
 			mic.hook_delete_all();
-
-			$(".form_datetime").datetimepicker({
-				minView: "month",
-				language: "{{ g.locale|default('en') }}",
-				format: "yyyy-mm-dd",
-				autoclose: true,
-				todayBtn: true
-			});
-
-			$('.form-date span.input-group-addon').click(function () {
-				$(this).prev('.form_datetime').focus();
-			});
 
 			{% block jquery %}
 				// current document scripts

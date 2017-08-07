@@ -17,11 +17,15 @@ from ..utils import Master
 @login_required
 def show_categories(page=1):
     per_page = request.args.get('per_page', 10, type=int)
-    current_site_id = Site.master_site_id(current_user)
-    builder = Category.query.filter_by(site_id=current_site_id)
+    # 获取当前官网
+    current_site = Site.current_site(master_uid=Master.master_uid())
+
+    builder = Category.query.filter_by(site_id=current_site.id)
 
     total_count = builder.count()
-    categories = Category.always_category(site_id=current_site_id, language_id=1, path=0, page=1, per_page=per_page)
+    categories = Category.always_category(site_id=current_site.id,
+                                          language_id=current_site.default_language,
+                                          path=0, page=1, per_page=per_page)
 
     paginated_categories = []
     for cate in categories:
@@ -51,9 +55,9 @@ def repair_category_path(parent_id=0):
 @admin.route('/categories/create', methods=['GET', 'POST'])
 @login_required
 def create_category():
-    current_site_id = Site.master_site_id(current_user)
-    site = Site.query.get_or_404(current_site_id)
-    site_languages = site.languages
+    # 获取当前官网
+    current_site = Site.current_site(master_uid=Master.master_uid())
+    site_languages = current_site.support_languages
     form = CategoryForm()
     if form.validate_on_submit():
         # if parent_id有值，则不是一级分类
@@ -83,7 +87,7 @@ def create_category():
         # save category
         category = Category(
             master_uid=Master.master_uid(),
-            site_id=current_site_id,
+            site_id=current_site.id,
             top=form.top.data,
             parent_id=form.parent_id.data,
             icon_id=form.icon.data,
@@ -109,7 +113,9 @@ def create_category():
 
     mode = 'create'
     category = None
-    paginated_categories = Category.always_category(site_id=current_site_id, language_id=1, path=0, page=1, per_page=100)
+    paginated_categories = Category.always_category(site_id=current_site.id,
+                                                    language_id=current_site.default_language,
+                                                    path=0, page=1, per_page=100)
 
     return render_template('admin/categories/create_and_edit.html',
                            form=form,
@@ -121,10 +127,11 @@ def create_category():
 
 
 @admin.route('/categories/<int:id>/edit', methods=['GET', 'POST'])
+@login_required
 def edit_category(id):
-    current_site_id = Site.master_site_id(current_user)
-    site = Site.query.get_or_404(current_site_id)
-    site_languages = site.languages
+    # 获取当前官网
+    current_site = Site.current_site(master_uid=Master.master_uid())
+    site_languages = current_site.support_languages
 
     category = Category.query.get_or_404(id)
     form = CategoryForm()
@@ -159,7 +166,9 @@ def edit_category(id):
     form.sort_order.data = category.sort_order
     form.status.data = category.status
 
-    paginated_categories = Category.always_category(site_id=current_site_id, language_id=1, path=0, page=1, per_page=100)
+    paginated_categories = Category.always_category(site_id=current_site.id,
+                                                    language_id=current_site.default_language,
+                                                    path=0, page=1, per_page=100)
 
     return render_template('admin/categories/create_and_edit.html',
                            form=form,
@@ -171,6 +180,7 @@ def edit_category(id):
 
 
 @admin.route('/categories/delete', methods=['POST'])
+@login_required
 def delete_category():
     """批量或单个删除元素"""
 

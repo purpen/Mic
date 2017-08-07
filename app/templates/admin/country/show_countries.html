@@ -9,7 +9,7 @@
 
 		<div class="pull-right m-t-10">
 			{% include 'block/_select_items.html' %}
-			<a href="{{ url_for('admin.create_country') }}" class="btn btn-icon btn-primary" data-toggle="tooltip" data-original-title="{{ _('Add New') }}">
+			<a href="{{ url_for('admin.create_country') }}" class="btn btn-icon btn-primary pjax" data-toggle="tooltip" data-original-title="{{ _('Add New') }}">
 				<i class="fa fa-plus"></i>
 			</a>
 			<button type="button" data-form-id="form-countries" class="btn btn-icon btn-danger delete-all hidden" data-toggle="tooltip" data-original-title="{{ _('Delete') }}">
@@ -28,11 +28,11 @@
 					<th class="text-center">
 						<input name="check_all" type="checkbox" class="check-all">
 					</th>
-					<th class="text-center">Country Name</th>
-					<th>ISO Code (2)</th>
-					<th>ISO Code (3)</th>
-					<th class="text-right">Status</th>
-					<th class="text-right">Action</th>
+					<th>{{ _('Country Name') }}</th>
+					<th>{{ _('ISO Code (2)') }}</th>
+					<th>{{ _('ISO Code (3)') }}</th>
+					<th class="text-right">{{ _('Status') }}</th>
+					<th class="text-right">{{ _('Action') }}</th>
 				</tr>
 				</thead>
 
@@ -42,7 +42,7 @@
 					<td class="text-center">
 						<input name="selected[]" class="check-one" value="{{ country.id }}" type="checkbox">
 					</td>
-					<td class="text-center">
+					<td>
 						{{ country.name }}
 					</td>
 					<td>{{ country.iso_code_2 }}</td>
@@ -55,7 +55,7 @@
 						{% endif %}
 					</td>
 					<td class="actions text-right">
-						<a href="{{ url_for('admin.edit_country', id=country.id) }}" class="btn btn-link" data-toggle="tooltip" data-original-title="{{ _('Edit') }}">
+						<a href="{{ url_for('admin.edit_country', id=country.id) }}" class="btn btn-link pjax" data-toggle="tooltip" data-original-title="{{ _('Edit') }}">
 							{{ _('Edit') }}
 						</a>
 					</td>
